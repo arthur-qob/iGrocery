@@ -1,0 +1,87 @@
+@import 'tailwindcss';
+
+html {
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body {
+	background-color: var(--color-background-secondary);
+	color: var(--color-text);
+}
+
+@layer utilities {
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes bounceSlow {
+		0%,
+		100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-8px);
+		}
+	}
+
+	.animate-fade-in {
+		animation: fadeIn 0.8s ease-out forwards;
+	}
+
+	.animate-bounce-slow {
+		animation: bounceSlow 3s ease-in-out infinite;
+	}
+}
+
+@theme {
+	--color-bg: var(--color-background);
+	--color-bg-secondary: var(--color-background-secondary);
+	--color-bg-tertiary: var(--color-background-tertiary);
+	--color-surface: var(--color-surface-val);
+	--color-text-primary: var(--color-text);
+	--color-text-secondary: var(--color-text-muted);
+	--color-text-tertiary: var(--color-text-faint);
+	--color-border: var(--color-border-val);
+	--color-border-light: var(--color-border-subtle);
+}
+
+[data-theme='light'] {
+	/* Backgrounds */
+	--color-background: #ffffff;
+	--color-background-secondary: #f9fafb;
+	--color-background-tertiary: #f3f4f6;
+	--color-surface-val: #ffffff;
+
+	/* Text */
+	--color-text: #111827;
+	--color-text-muted: #6b7280;
+	--color-text-faint: #9ca3af;
+
+	/* Borders */
+	--color-border-val: #e5e7eb;
+	--color-border-subtle: #f3f4f6;
+}
+
+[data-theme='dark'] {
+	/* Backgrounds */
+	--color-background: #0f0f0f;
+	--color-background-secondary: #1a1a1a;
+	--color-background-tertiary: #262626;
+	--color-surface-val: #1a1a1a;
+
+	/* Text */
+	--color-text: #f3f4f6;
+	--color-text-muted: #9ca3af;
+	--color-text-faint: #6b7280;
+
+	/* Borders */
+	--color-border-val: #374151;
+	--color-border-subtle: #1f2937;
+}
