@@ -19,9 +19,9 @@ if (!process.env['GOOGLE_APPLICATION_CREDENTIALS'] && (!clientEmail || !privateK
 const credential = process.env['GOOGLE_APPLICATION_CREDENTIALS']
 	? applicationDefault()
 	: cert({
-			projectId: process.env['FIREBASE_PROJECT_ID'],
-			clientEmail,
-			privateKey: privateKey?.replace(/\\n/g, '\n'),
+			projectId: process.env['FIREBASE_PROJECT_ID']!,
+			clientEmail: clientEmail!,
+			privateKey: privateKey!.replace(/\\n/g, '\n'),
 		})
 
 initializeApp({ credential })
