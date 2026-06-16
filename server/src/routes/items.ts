@@ -30,25 +30,22 @@ async function requireListMember(
 }
 
 // GET /api/lists/:listId/items
-router.get('/', async (req, res) => {
-	const list = await requireListMember(
-		req.params['listId'] ?? '',
-		req.user!.uid
-	)
+router.get<{ listId: string }>('/', async (req, res) => {
+	const list = await requireListMember(req.params.listId, req.user!.uid)
 	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
 	const items = await firestoreDB.getItems(list.id)
 	res.json(items)
 })
 
 // POST /api/lists/:listId/items
-router.post('/', async (req, res) => {
+router.post<{ listId: string }>('/', async (req, res) => {
 	const parsed = createItemSchema.safeParse(req.body)
 	if (!parsed.success) {
 		res.status(400).json({ error: parsed.error.flatten() })
 		return
 	}
 	const uid = req.user!.uid
-	const list = await requireListMember(req.params['listId'] ?? '', uid)
+	const list = await requireListMember(req.params.listId, uid)
 	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
 
 	const id = await firestoreDB.createItem(list.id, parsed.data)
@@ -61,30 +58,24 @@ router.post('/', async (req, res) => {
 })
 
 // PATCH /api/lists/:listId/items/:itemId
-router.patch('/:itemId', async (req, res) => {
+router.patch<{ listId: string; itemId: string }>('/:itemId', async (req, res) => {
 	const parsed = updateItemSchema.safeParse(req.body)
 	if (!parsed.success) {
 		res.status(400).json({ error: parsed.error.flatten() })
 		return
 	}
-	const list = await requireListMember(
-		req.params['listId'] ?? '',
-		req.user!.uid
-	)
+	const list = await requireListMember(req.params.listId, req.user!.uid)
 	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
-	await firestoreDB.updateItem(list.id, req.params['itemId'] ?? '', parsed.data)
+	await firestoreDB.updateItem(list.id, req.params.itemId, parsed.data)
 	void firestoreDB.touchList(list.id)
 	res.json({ ok: true })
 })
 
 // DELETE /api/lists/:listId/items/:itemId
-router.delete('/:itemId', async (req, res) => {
-	const list = await requireListMember(
-		req.params['listId'] ?? '',
-		req.user!.uid
-	)
+router.delete<{ listId: string; itemId: string }>('/:itemId', async (req, res) => {
+	const list = await requireListMember(req.params.listId, req.user!.uid)
 	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
-	await firestoreDB.deleteItem(list.id, req.params['itemId'] ?? '')
+	await firestoreDB.deleteItem(list.id, req.params.itemId)
 	void firestoreDB.touchList(list.id)
 	res.json({ ok: true })
 })
