@@ -19,6 +19,7 @@ import { Api } from '@/utils/api'
 import type { GroceryList, GroceryItem } from '@/utils/api'
 import { useCurrency, CURRENCY_OPTIONS } from '@/hooks/useCurrency'
 import { useAuth } from '@/contexts/authContext'
+import { useTranslation } from 'react-i18next'
 
 // ── Edit Item Modal ──────────────────────────────────────────────────────────
 
@@ -31,6 +32,7 @@ type EditItemModalProps = {
 }
 
 const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
+	const { t } = useTranslation()
 	const [name, setName] = useState(item.name)
 	const [quantity, setQuantity] = useState(String(item.quantity))
 	const [price, setPrice] = useState(String(item.price))
@@ -61,7 +63,7 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 				className='bg-surface rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md p-6'
 				onClick={(e) => e.stopPropagation()}>
 				<div className='flex items-center justify-between mb-6'>
-					<h2 className='text-xl font-semibold text-text-primary'>Edit Item</h2>
+					<h2 className='text-xl font-semibold text-text-primary'>{t('list.editItem.title')}</h2>
 					<button
 						type='button'
 						className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary hover:text-text-secondary transition-colors'
@@ -72,7 +74,7 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 
 				<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
 					<div className='flex flex-col gap-1'>
-						<label className='text-sm font-medium text-text-primary'>Name</label>
+						<label className='text-sm font-medium text-text-primary'>{t('list.editItem.name')}</label>
 						<input
 							type='text'
 							autoFocus
@@ -84,7 +86,7 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 					</div>
 					<div className='grid grid-cols-2 gap-4'>
 						<div className='flex flex-col gap-1'>
-							<label className='text-sm font-medium text-text-primary'>Quantity</label>
+							<label className='text-sm font-medium text-text-primary'>{t('list.editItem.quantity')}</label>
 							<input
 								type='number'
 								min={1}
@@ -95,7 +97,7 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							/>
 						</div>
 						<div className='flex flex-col gap-1'>
-							<label className='text-sm font-medium text-text-primary'>Price</label>
+							<label className='text-sm font-medium text-text-primary'>{t('list.editItem.price')}</label>
 							<input
 								type='number'
 								step='0.01'
@@ -110,7 +112,8 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 					<div className='grid grid-cols-2 gap-4'>
 						<div className='flex flex-col gap-1'>
 							<label className='text-sm font-medium text-text-primary'>
-								Weight <span className='text-text-tertiary font-normal'>(optional)</span>
+								{t('list.editItem.weight')}{' '}
+								<span className='text-text-tertiary font-normal'>{t('list.editItem.weightOptional')}</span>
 							</label>
 							<input
 								type='number'
@@ -122,14 +125,14 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							/>
 						</div>
 						<div className='flex flex-col gap-1'>
-							<label className='text-sm font-medium text-text-primary'>Unit</label>
+							<label className='text-sm font-medium text-text-primary'>{t('list.editItem.unit')}</label>
 							<select
 								value={weightUnit}
 								onChange={(e) => setWeightUnit(e.target.value as WeightUnit)}
 								className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-surface text-text-primary'>
-								<option value='kg'>kg</option>
-								<option value='lbs'>lbs</option>
-								<option value='oz'>oz</option>
+								<option value='kg'>{t('list.units.kg')}</option>
+								<option value='lbs'>{t('list.units.lbs')}</option>
+								<option value='oz'>{t('list.units.oz')}</option>
 							</select>
 						</div>
 					</div>
@@ -138,14 +141,14 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							type='button'
 							className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
 							onClick={onClose}>
-							Cancel
+							{t('list.editItem.cancel')}
 						</button>
 						<button
 							type='submit'
 							disabled={loading}
 							className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white transition-colors'>
 							{loading ? <Loader2 size={14} className='animate-spin' /> : null}
-							Save
+							{t('list.editItem.save')}
 						</button>
 					</div>
 				</form>
@@ -162,6 +165,7 @@ type ShareModalProps = {
 }
 
 const ShareModal = ({ listId, onClose }: ShareModalProps) => {
+	const { t } = useTranslation()
 	const [inviteUrl, setInviteUrl] = useState<string | null>(null)
 	const [qrDataUrl, setQrDataUrl] = useState<string | null>(null)
 	const [showQr, setShowQr] = useState(false)
@@ -174,9 +178,9 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 			.then(({ token }) => {
 				setInviteUrl(`${window.location.origin}/invite/${token}`)
 			})
-			.catch(() => setError('Failed to generate invite link.'))
+			.catch(() => setError(t('list.share.error')))
 			.finally(() => setLoading(false))
-	}, [listId])
+	}, [listId, t])
 
 	const handleCopy = async () => {
 		if (!inviteUrl) return
@@ -203,7 +207,7 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 				className='bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 p-6'
 				onClick={(e) => e.stopPropagation()}>
 				<div className='flex items-center justify-between mb-4'>
-					<h2 className='text-xl font-semibold text-text-primary'>Share List</h2>
+					<h2 className='text-xl font-semibold text-text-primary'>{t('list.share.title')}</h2>
 					<button
 						type='button'
 						className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary transition-colors'
@@ -225,7 +229,7 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 				{inviteUrl && (
 					<div className='flex flex-col gap-4'>
 						<p className='text-sm text-text-secondary'>
-							Anyone with this link can join this list. The link expires in 7 days.
+							{t('list.share.description')}
 						</p>
 
 						<div className='flex items-center gap-2'>
@@ -240,7 +244,7 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 								onClick={handleCopy}
 								className='shrink-0 cursor-pointer flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-green-500 hover:bg-green-600 text-white transition-colors'>
 								{copied ? <Check size={15} /> : <Copy size={15} />}
-								{copied ? 'Copied' : 'Copy'}
+								{copied ? t('list.share.copied') : t('list.share.copy')}
 							</button>
 						</div>
 
@@ -249,7 +253,7 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 							onClick={handleToggleQr}
 							className='cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-text-secondary hover:bg-bg-secondary transition-colors'>
 							<QrCode size={16} />
-							{showQr ? 'Hide QR Code' : 'Show QR Code'}
+							{showQr ? t('list.share.hideQR') : t('list.share.showQR')}
 						</button>
 
 						{showQr && qrDataUrl && (
@@ -275,38 +279,42 @@ type ConfirmModalProps = {
 	onClose: () => void
 }
 
-const ConfirmModal = ({ title, message, confirmLabel, danger = false, onConfirm, onClose }: ConfirmModalProps) => (
-	<div
-		className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
-		onClick={onClose}>
+const ConfirmModal = ({ title, message, confirmLabel, danger = false, onConfirm, onClose }: ConfirmModalProps) => {
+	const { t } = useTranslation()
+	return (
 		<div
-			className='bg-surface rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6'
-			onClick={(e) => e.stopPropagation()}>
-			<h2 className='text-lg font-semibold text-text-primary'>{title}</h2>
-			<p className='mt-2 text-sm text-text-secondary'>{message}</p>
-			<div className='flex justify-end gap-3 mt-6'>
-				<button
-					type='button'
-					className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
-					onClick={onClose}>
-					Cancel
-				</button>
-				<button
-					type='button'
-					className={`cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors ${
-						danger ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'
-					}`}
-					onClick={onConfirm}>
-					{confirmLabel}
-				</button>
+			className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
+			onClick={onClose}>
+			<div
+				className='bg-surface rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6'
+				onClick={(e) => e.stopPropagation()}>
+				<h2 className='text-lg font-semibold text-text-primary'>{title}</h2>
+				<p className='mt-2 text-sm text-text-secondary'>{message}</p>
+				<div className='flex justify-end gap-3 mt-6'>
+					<button
+						type='button'
+						className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
+						onClick={onClose}>
+						{t('common.cancel')}
+					</button>
+					<button
+						type='button'
+						className={`cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors ${
+							danger ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'
+						}`}
+						onClick={onConfirm}>
+						{confirmLabel}
+					</button>
+				</div>
 			</div>
 		</div>
-	</div>
-)
+	)
+}
 
 // ── Main List Page ────────────────────────────────────────────────────────────
 
 const List = () => {
+	const { t } = useTranslation()
 	const { id: listId } = useParams<{ id: string }>()
 	const navigate = useNavigate()
 	const { currentUser } = useAuth()
@@ -352,20 +360,20 @@ const List = () => {
 		Promise.all([getList(listId), getItems(listId)])
 			.then(([l, i]) => {
 				if (cancelled) return
-				if (!l) { setError('List not found.'); return }
+				if (!l) { setError(t('list.errors.notFound')); return }
 				setList(l)
 				setListName(l.name)
 				setItems(i)
 			})
 			.catch(() => {
-				if (!cancelled) setError('Failed to load list.')
+				if (!cancelled) setError(t('list.errors.loadFailed'))
 			})
 			.finally(() => {
 				if (!cancelled) setLoading(false)
 			})
 
 		return () => { cancelled = true }
-	}, [listId])
+	}, [listId, t])
 
 	// ── Live polling ──────────────────────────────────────────────────────────
 	useEffect(() => {
@@ -383,7 +391,7 @@ const List = () => {
 				if (!nameInputFocused.current) setListName(freshList.name)
 			} catch (e) {
 				if ((e as { status?: number }).status === 404) {
-					setError('This list has been deleted.')
+					setError(t('list.errors.deleted'))
 				}
 				// other errors are network blips — silently ignore
 			} finally {
@@ -392,7 +400,7 @@ const List = () => {
 		}
 		const id = setInterval(() => { void tick() }, 5000)
 		return () => clearInterval(id)
-	}, [listId, loading])
+	}, [listId, loading, t])
 
 	// ── Derived state ─────────────────────────────────────────────────────────
 	const allChecked = items.length > 0 && items.every((item) => !!item.isChecked)
@@ -485,9 +493,9 @@ const List = () => {
 
 	const handleDeleteList = () => {
 		setConfirmDialog({
-			title: 'Delete list',
-			message: 'Are you sure you want to delete this list? This action cannot be undone.',
-			confirmLabel: 'Delete',
+			title: t('list.deleteList.title'),
+			message: t('list.deleteList.message'),
+			confirmLabel: t('list.deleteList.confirm'),
 			danger: true,
 			onConfirm: async () => {
 				setConfirmDialog(null)
@@ -501,9 +509,9 @@ const List = () => {
 
 	const handleLeaveList = () => {
 		setConfirmDialog({
-			title: 'Leave list',
-			message: 'Are you sure you want to leave this list?',
-			confirmLabel: 'Leave',
+			title: t('list.leaveList.title'),
+			message: t('list.leaveList.message'),
+			confirmLabel: t('list.leaveList.confirm'),
 			onConfirm: async () => {
 				setConfirmDialog(null)
 				setLeavingOrDeletingList(true)
@@ -552,7 +560,7 @@ const List = () => {
 					onFocus={() => { nameInputFocused.current = true }}
 					onBlur={() => { nameInputFocused.current = false }}
 					disabled={loading}
-					placeholder='List name'
+					placeholder={t('list.listNamePlaceholder')}
 				/>
 				<div className='flex items-center gap-1 shrink-0'>
 					{/* Currency dropdown */}
@@ -588,7 +596,7 @@ const List = () => {
 							className='inline-flex items-center gap-1 p-2 rounded-lg text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors'
 							onClick={() => setIsSelectOpen(!isSelectOpen)}
 							onBlur={() => setIsSelectOpen(false)}>
-							{list?.status ?? 'OPENED'} <ChevronDown size={14} />
+							{t(`list.status.${list?.status ?? 'OPENED'}` as const)} <ChevronDown size={14} />
 						</button>
 						<div
 							className={`absolute top-10 right-0 w-max bg-surface rounded-lg shadow-lg border border-border overflow-hidden ${
@@ -600,7 +608,7 @@ const List = () => {
 										key={type}
 										className='text-sm text-text-primary hover:bg-green-100 transition-colors duration-200 rounded-md px-3 py-1.5 cursor-pointer'
 										onMouseDown={() => handleStatusChange(type)}>
-										{type}
+										{t(`list.status.${type}`)}
 									</li>
 								))}
 							</ul>
@@ -621,7 +629,7 @@ const List = () => {
 							type='button'
 							disabled={leavingOrDeletingList}
 							className='cursor-pointer p-2 rounded-lg text-text-secondary hover:text-red-500 hover:bg-red-50 transition-colors disabled:opacity-50'
-							title='Delete list'
+							title={t('list.tooltip.deleteList')}
 							onClick={handleDeleteList}>
 							{leavingOrDeletingList ? (
 								<Loader2 size={18} className='animate-spin' />
@@ -635,7 +643,7 @@ const List = () => {
 							type='button'
 							disabled={leavingOrDeletingList}
 							className='cursor-pointer p-2 rounded-lg text-text-secondary hover:text-orange-500 hover:bg-orange-50 transition-colors disabled:opacity-50'
-							title='Leave list'
+							title={t('list.tooltip.leaveList')}
 							onClick={handleLeaveList}>
 							{leavingOrDeletingList ? (
 								<Loader2 size={18} className='animate-spin' />
@@ -697,16 +705,16 @@ const List = () => {
 											</div>
 											<div className='mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary'>
 												<span className={item.isChecked ? 'line-through text-text-tertiary' : ''}>
-													Qty: {item.quantity}
+													{t('list.qty', { qty: item.quantity })}
 												</span>
 												{item.weight && (
 													<span
 														className={`inline-flex items-center gap-0.5 bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full text-xs ${item.isChecked ? 'opacity-50' : ''}`}>
-														{item.weight.value} {item.weight.unit}
+														{item.weight.value} {t(`list.units.${item.weight.unit as WeightUnit}`)}
 													</span>
 												)}
 												<span className={item.isChecked ? 'line-through text-text-tertiary' : ''}>
-												{fmt(item.price)} ea
+													{t('list.priceEach', { price: fmt(item.price) })}
 												</span>
 											</div>
 											<div className='mt-1 text-sm font-semibold text-text-primary text-right'>
@@ -722,7 +730,7 @@ const List = () => {
 								className='flex items-center gap-2 px-4 py-3 text-sm text-text-tertiary hover:text-green-600 hover:bg-bg-secondary transition-colors cursor-pointer w-full'
 								onClick={() => setShowAddItemModal(true)}>
 								<Plus size={16} />
-								Add item
+								{t('list.addItem')}
 							</button>
 						)}
 					</div>
@@ -731,11 +739,11 @@ const List = () => {
 					{!loading && (
 						<div className='md:hidden flex flex-col gap-2 rounded-xl border border-border bg-bg-secondary p-4'>
 							<div className='flex items-center justify-between text-sm'>
-								<span className='font-semibold text-text-primary'>Groceries Total</span>
+								<span className='font-semibold text-text-primary'>{t('list.totals.groceriesTotal')}</span>
 								<span className='font-bold text-text-primary'>{fmt(groceriesTotal)}</span>
 							</div>
 							<div className='flex items-center justify-between text-sm pt-2 border-t border-border'>
-								<span className='font-semibold text-text-primary'>Total to pay</span>
+								<span className='font-semibold text-text-primary'>{t('list.totals.totalToPay')}</span>
 								<span className='font-bold text-green-600'>{fmt(totalToPay)}</span>
 							</div>
 						</div>
@@ -753,11 +761,11 @@ const List = () => {
 											onChange={handleCheckAllItems}
 										/>
 									</th>
-									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>Item</th>
-									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>Qty</th>
-									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>Weight</th>
-									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>Price</th>
-									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>Total</th>
+									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.item')}</th>
+									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.qty')}</th>
+									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.weight')}</th>
+									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.price')}</th>
+									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.total')}</th>
 									<th className='w-20' />
 								</tr>
 							</thead>
@@ -794,7 +802,7 @@ const List = () => {
 												<td className='px-4 py-3 text-text-secondary'>
 													{item.weight ? (
 														<span className={`inline-flex items-center gap-1 text-sm bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full ${item.isChecked ? 'opacity-50' : ''}`}>
-															{item.weight.value} {item.weight.unit}
+															{item.weight.value} {t(`list.units.${item.weight.unit as WeightUnit}`)}
 														</span>
 													) : (
 														<span className='text-text-tertiary'>&mdash;</span>
@@ -834,7 +842,7 @@ const List = () => {
 												type='button'
 												className='flex items-center gap-2 text-sm text-text-tertiary group-hover:text-green-600 transition-colors'>
 												<Plus size={16} />
-												Add item
+												{t('list.addItem')}
 											</button>
 										</td>
 									</tr>
@@ -844,7 +852,7 @@ const List = () => {
 								<tfoot>
 									<tr className='border-t-2 border-border bg-bg-secondary'>
 										<td colSpan={5} className='px-4 py-3 text-right font-semibold text-text-primary'>
-											Groceries Total
+											{t('list.totals.groceriesTotal')}
 										</td>
 										<td className='px-4 py-3 text-right font-bold text-text-primary'>
 											{fmt(groceriesTotal)}
@@ -853,7 +861,7 @@ const List = () => {
 									</tr>
 									<tr className='border-t border-border bg-bg-secondary'>
 										<td colSpan={5} className='px-4 py-3 text-right font-semibold text-text-primary'>
-											Total to pay
+											{t('list.totals.totalToPay')}
 										</td>
 										<td className='px-4 py-3 text-right font-bold text-green-600'>
 											{fmt(totalToPay)}
@@ -872,7 +880,7 @@ const List = () => {
 						type='button'
 						className='cursor-pointer flex items-center gap-2 text-green-500 hover:border-b border-green-500 transition-all duration-200'
 						onClick={() => setShowAddItemModal(true)}>
-						Add items to your list
+						{t('list.addItem')}
 					</button>
 				</div>
 			)}
@@ -886,7 +894,7 @@ const List = () => {
 						className='bg-surface rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md p-6'
 						onClick={(e) => e.stopPropagation()}>
 						<div className='flex items-center justify-between mb-6'>
-							<h2 className='text-xl font-semibold text-text-primary'>Add Item</h2>
+							<h2 className='text-xl font-semibold text-text-primary'>{t('list.addItemModal.title')}</h2>
 							<button
 								type='button'
 								className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary hover:text-text-secondary transition-colors'
@@ -897,10 +905,9 @@ const List = () => {
 
 						<form className='flex flex-col gap-4' onSubmit={handleAddItem}>
 							<div className='flex flex-col gap-1'>
-								<label className='text-sm font-medium text-text-primary'>Name</label>
+								<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.name')}</label>
 								<input
 									type='text'
-									placeholder='e.g. Rice'
 									autoFocus
 									value={addName}
 									onChange={(e) => setAddName(e.target.value)}
@@ -910,7 +917,7 @@ const List = () => {
 							</div>
 							<div className='grid grid-cols-2 gap-4'>
 								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>Quantity</label>
+									<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.quantity')}</label>
 									<input
 										type='number'
 										min={1}
@@ -921,7 +928,7 @@ const List = () => {
 									/>
 								</div>
 								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>Price</label>
+									<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.price')}</label>
 									<input
 										type='number'
 										step='0.01'
@@ -936,7 +943,8 @@ const List = () => {
 							<div className='grid grid-cols-2 gap-4'>
 								<div className='flex flex-col gap-1'>
 									<label className='text-sm font-medium text-text-primary'>
-										Weight <span className='text-text-tertiary font-normal'>(optional)</span>
+										{t('list.addItemModal.weight')}{' '}
+										<span className='text-text-tertiary font-normal'>{t('list.addItemModal.weightOptional')}</span>
 									</label>
 									<input
 										type='number'
@@ -944,19 +952,18 @@ const List = () => {
 										min={0}
 										value={addWeightVal}
 										onChange={(e) => setAddWeightVal(e.target.value)}
-										placeholder='—'
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary placeholder:text-text-tertiary'
 									/>
 								</div>
 								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>Unit</label>
+									<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.unit')}</label>
 									<select
 										value={addWeightUnit}
 										onChange={(e) => setAddWeightUnit(e.target.value as WeightUnit)}
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-surface text-text-primary'>
-										<option value='kg'>kg</option>
-										<option value='lbs'>lbs</option>
-										<option value='oz'>oz</option>
+										<option value='kg'>{t('list.units.kg')}</option>
+										<option value='lbs'>{t('list.units.lbs')}</option>
+										<option value='oz'>{t('list.units.oz')}</option>
 									</select>
 								</div>
 							</div>
@@ -965,14 +972,14 @@ const List = () => {
 									type='button'
 									className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
 									onClick={() => setShowAddItemModal(false)}>
-									Cancel
+									{t('list.addItemModal.cancel')}
 								</button>
 								<button
 									type='submit'
 									disabled={addLoading}
 									className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white transition-colors'>
 									{addLoading ? <Loader2 size={14} className='animate-spin' /> : null}
-									Add
+									{t('list.addItemModal.add')}
 								</button>
 							</div>
 						</form>

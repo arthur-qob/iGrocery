@@ -1,4 +1,8 @@
-import { StrictMode } from 'react'
+// i18n must be initialised before any component renders
+import './i18n/config'
+import './i18n/types'
+
+import { StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './app.tsx'
@@ -9,14 +13,18 @@ import { AuthProvider } from './contexts/authContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
-		<ThemeContextProvider>
-			<AuthProvider>
-				<PushNotificationsProvider>
-					<BrowserRouter>
-						<App />
-					</BrowserRouter>
-				</PushNotificationsProvider>
-			</AuthProvider>
-		</ThemeContextProvider>
+		{/* Suspense is required by i18next-resources-to-backend while the
+		    locale JSON is being lazily fetched on first load */}
+		<Suspense fallback={null}>
+			<ThemeContextProvider>
+				<AuthProvider>
+					<PushNotificationsProvider>
+						<BrowserRouter>
+							<App />
+						</BrowserRouter>
+					</PushNotificationsProvider>
+				</AuthProvider>
+			</ThemeContextProvider>
+		</Suspense>
 	</StrictMode>
 )

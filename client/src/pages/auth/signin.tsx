@@ -2,12 +2,15 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { SignIn } from '@/utils/auth'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
 interface SignInFormProps {
 	onToggleForm?: () => void
 }
 
 const SignInForm = ({ onToggleForm }: SignInFormProps) => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const location = useLocation()
 	const from = (location.state as { from?: string } | null)?.from ?? '/lists'
@@ -25,8 +28,8 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 			await SignIn({ mode: 'email&pswd', email, password })
 			navigate(from, { replace: true })
 		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : 'Sign in failed'
-			setError(friendlyError(msg))
+			const msg = err instanceof Error ? err.message : t('auth.errors.signInFailed')
+			setError(friendlyError(msg, t))
 		} finally {
 			setLoading(false)
 		}
@@ -39,8 +42,8 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 			await SignIn({ mode: 'google', email: null, password: null })
 			navigate(from, { replace: true })
 		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : 'Sign in failed'
-			setError(friendlyError(msg))
+			const msg = err instanceof Error ? err.message : t('auth.errors.signInFailed')
+			setError(friendlyError(msg, t))
 		} finally {
 			setLoading(false)
 		}
@@ -49,7 +52,7 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 	return (
 		<div className='w-full max-w-md px-8'>
 			<h1 className='text-3xl font-medium mb-10 text-center text-text-primary'>
-				Sign In
+				{t('auth.signIn')}
 			</h1>
 
 			<form className='flex flex-col gap-6' onSubmit={handleSubmit}>
@@ -57,14 +60,14 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 					<label
 						htmlFor='signin-email'
 						className='text-sm text-text-secondary font-medium'>
-						Email
+						{t('auth.email')}
 					</label>
 					<input
 						autoFocus
 						type='email'
 						name='email'
 						id='signin-email'
-						placeholder='Enter your email'
+						placeholder={t('auth.enterEmail')}
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						required
@@ -76,14 +79,14 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 					<label
 						htmlFor='signin-password'
 						className='text-sm text-text-secondary font-medium'>
-						Password
+						{t('auth.password')}
 					</label>
 					<div className='flex flex-row items-center justify-between border-b-2 border-border focus-within:border-green-500 pb-2 transition-colors duration-200'>
 						<input
 							type={showPassword ? 'text' : 'password'}
 							name='password'
 							id='signin-password'
-							placeholder='Enter your password'
+							placeholder={t('auth.enterPassword')}
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							required
@@ -113,12 +116,12 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 					disabled={loading}
 					className='w-full flex items-center justify-center gap-2 text-white font-medium text-lg py-3 rounded-xl bg-green-500 hover:bg-green-600 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-300'>
 					{loading ? <Loader2 size={20} className='animate-spin' /> : null}
-					Sign In
+					{t('auth.signIn')}
 				</button>
 
 				<div className='flex items-center gap-4'>
 					<span className='flex-1 border-t border-border'></span>
-					<span className='text-text-secondary'>OR</span>
+					<span className='text-text-secondary'>{t('common.or')}</span>
 					<span className='flex-1 border-t border-border'></span>
 				</div>
 
@@ -127,7 +130,7 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 					onClick={handleGoogle}
 					disabled={loading}
 					className='w-full text-text-secondary font-medium text-lg py-3 rounded-xl border border-border hover:bg-bg-tertiary disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-300'>
-					Sign In with Google
+					{t('auth.signInWithGoogle')}
 				</button>
 			</form>
 
@@ -137,13 +140,13 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 						type='button'
 						onClick={onToggleForm}
 						className='text-green-500 hover:text-green-600 transition-colors duration-300 underline bg-none border-none cursor-pointer'>
-						Don't have an account yet? Create one now!
+						{t('auth.noAccountYet')}
 					</button>
 				) : (
 					<Link
 						to='/signup'
 						className='text-green-500 hover:text-green-600 transition-colors duration-300 underline'>
-						Don't have an account yet? Create one now!
+						{t('auth.noAccountYet')}
 					</Link>
 				)}
 			</div>
@@ -151,13 +154,13 @@ const SignInForm = ({ onToggleForm }: SignInFormProps) => {
 	)
 }
 
-function friendlyError(msg: string): string {
+function friendlyError(msg: string, t: TFunction): string {
 	if (msg.includes('user-not-found') || msg.includes('wrong-password') || msg.includes('invalid-credential'))
-		return 'Invalid email or password.'
+		return t('auth.errors.invalidCredential')
 	if (msg.includes('too-many-requests'))
-		return 'Too many attempts. Please try again later.'
+		return t('auth.errors.tooManyRequests')
 	if (msg.includes('network-request-failed'))
-		return 'Network error. Check your connection.'
+		return t('auth.errors.networkError')
 	return msg
 }
 

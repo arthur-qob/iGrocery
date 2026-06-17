@@ -4,8 +4,10 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { useAuth } from '@/contexts/authContext'
 import { SignOut } from '@/utils/auth'
+import { useTranslation } from 'react-i18next'
 
 const Navbar = () => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const { userLoggedIn, currentUser } = useAuth()
 	const [menuOpen, setMenuOpen] = useState(false)
@@ -62,7 +64,7 @@ const Navbar = () => {
 						{currentUser?.photoURL ? (
 							<img
 								src={currentUser.photoURL}
-								alt='Profile'
+								alt={t('nav.profile')}
 								className='w-7 h-7 rounded-full object-cover ring-2 ring-border'
 							/>
 						) : (
@@ -72,7 +74,7 @@ const Navbar = () => {
 					{userLoggedIn && (
 						<button
 							className='p-2 rounded-lg text-text-secondary hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer'
-							title='Sign out'
+							title={t('nav.signOut')}
 							onClick={handleSignOut}>
 							<LogOut size={22} />
 						</button>
@@ -99,7 +101,7 @@ const Navbar = () => {
 									setMenuOpen(false)
 								}}>
 								<Cog size={18} />
-								Settings
+								{t('nav.settings')}
 							</button>
 							<button
 								className='w-full flex items-center gap-3 px-4 py-2.5 text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors cursor-pointer'
@@ -110,16 +112,16 @@ const Navbar = () => {
 								{currentUser?.photoURL ? (
 									<img
 										src={currentUser.photoURL}
-										alt='Profile'
+										alt={t('nav.profile')}
 										className='w-5 h-5 rounded-full object-cover ring-1 ring-border'
 									/>
 								) : (
 									<UserCircle size={18} />
 								)}
-								Profile
+								{t('nav.profile')}
 							</button>
 							<div className='text-sm text-text-secondary hover:text-text-primary px-4 py-2.5 flex items-center gap-3'>
-								Theme
+								{t('nav.theme')}
 								<ThemeToggler />
 							</div>
 							{userLoggedIn && (
@@ -127,7 +129,7 @@ const Navbar = () => {
 									className='w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer'
 									onClick={handleSignOut}>
 									<LogOut size={18} />
-									Sign Out
+									{t('nav.signOut')}
 								</button>
 							)}
 						</div>

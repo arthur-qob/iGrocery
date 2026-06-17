@@ -8,6 +8,7 @@ import QrScannerModal from '@/components/qrScannerModal'
 import { getLists, createList } from '@/utils/sync'
 import { Api } from '@/utils/api'
 import type { GroceryList, UserProfile } from '@/utils/api'
+import { useTranslation } from 'react-i18next'
 
 type SortOrder = 'name' | 'date-created' | 'date-modified'
 
@@ -39,6 +40,7 @@ function sortLists(lists: GroceryList[], order: SortOrder): GroceryList[] {
 }
 
 const Lists = () => {
+	const { t } = useTranslation()
 	const [loading, setLoading] = useState<boolean>(true)
 	const [lists, setLists] = useState<GroceryList[]>([])
 	const [memberProfiles, setMemberProfiles] = useState<UserProfile[]>([])
@@ -80,7 +82,7 @@ const Lists = () => {
 			})
 			.catch(() => {
 				if (!cancelled)
-					setError('Failed to load lists. Please try again.')
+					setError(t('lists.loadError'))
 			})
 			.finally(() => {
 				if (!cancelled) setLoading(false)
@@ -88,7 +90,7 @@ const Lists = () => {
 		return () => {
 			cancelled = true
 		}
-	}, [])
+	}, [t])
 
 	// ── Live polling ─────────────────────────────────────────────────────────
 	useEffect(() => {
@@ -152,27 +154,27 @@ const Lists = () => {
 			<div className='flex items-end justify-between'>
 				<div>
 					<h1 className='text-3xl font-semibold text-text-primary'>
-						Lists
+						{t('lists.title')}
 					</h1>
 					<p className='mt-1 text-text-secondary max-w-[160px] sm:max-w-xs md:max-w-none'>
-						Organize and manage your grocery lists
+						{t('lists.subtitle')}
 					</p>
 				</div>
 				<div className='flex items-center gap-2'>
 					<button
 						type='button'
-						title='Scan invite QR code'
+						title={t('lists.scanQR')}
 						className='flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary hover:bg-bg-tertiary font-medium px-3 py-2.5 rounded-lg cursor-pointer transition-colors duration-200'
 						onClick={() => setShowQrScanner(true)}>
 						<ScanLine size={18} />
-						<span className='hidden sm:inline text-sm'>Scan QR</span>
+						<span className='hidden sm:inline text-sm'>{t('lists.scanQR')}</span>
 					</button>
 					<button
 						type='button'
 						className='flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-colors duration-200'
 						onClick={() => setShowNewListModal(true)}>
 						<Plus size={18} />
-						<span className='hidden sm:inline'>New List</span>
+						<span className='hidden sm:inline'>{t('lists.newList')}</span>
 					</button>
 				</div>
 			</div>
@@ -217,18 +219,17 @@ const Lists = () => {
 						/>
 					</div>
 					<h2 className='text-xl font-semibold text-text-primary'>
-						No lists yet
+						{t('lists.noListsTitle')}
 					</h2>
 					<p className='mt-2 text-text-secondary max-w-sm'>
-						Create your first grocery list to start organizing your
-						shopping
+						{t('lists.noListsSubtitle')}
 					</p>
 					<button
 						type='button'
 						className='mt-6 flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-6 py-2.5 rounded-lg cursor-pointer transition-colors duration-200'
 						onClick={() => setShowNewListModal(true)}>
 						<Plus size={18} />
-						Create New List
+						{t('lists.createNewList')}
 					</button>
 				</div>
 			)}

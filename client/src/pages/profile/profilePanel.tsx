@@ -19,8 +19,10 @@ import { Api } from '@/utils/api'
 import { sendPasswordResetEmail, updateProfile } from 'firebase/auth'
 import { auth, app } from '@/utils/firebase/firebaseConfig'
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { useTranslation } from 'react-i18next'
 
 const ProfilePanel = () => {
+	const { t } = useTranslation()
 	const { currentUser } = useAuth()
 	const navigate = useNavigate()
 	const photoInputRef = useRef<HTMLInputElement>(null)
@@ -54,7 +56,7 @@ const ProfilePanel = () => {
 			await sendPasswordResetEmail(auth, currentUser.email)
 			setResetSent(true)
 		} catch {
-			setResetError('Failed to send reset email. Try again.')
+			setResetError(t('profile.errors.resetFailed'))
 		} finally {
 			setResetLoading(false)
 		}
@@ -87,7 +89,7 @@ const ProfilePanel = () => {
 			await updateProfile(currentUser, { photoURL: url })
 			setPhotoURL(url)
 		} catch {
-			setPhotoError('Failed to upload photo. Try again.')
+			setPhotoError(t('profile.errors.photoUploadFailed'))
 		} finally {
 			setPhotoLoading(false)
 			// Reset input so the same file can be re-selected if needed
@@ -113,10 +115,10 @@ const ProfilePanel = () => {
 					{/* Header */}
 					<div>
 						<h1 className='text-3xl font-semibold text-text-primary'>
-							Profile
+							{t('profile.title')}
 						</h1>
 						<p className='mt-1 text-text-secondary'>
-							Manage your account
+							{t('profile.subtitle')}
 						</p>
 					</div>
 
@@ -128,7 +130,7 @@ const ProfilePanel = () => {
 								{photoURL ? (
 									<img
 										src={photoURL}
-										alt='Profile'
+										alt={t('profile.title')}
 										className='w-full h-full object-cover'
 									/>
 								) : (
@@ -168,7 +170,7 @@ const ProfilePanel = () => {
 							disabled={photoLoading}
 							onClick={() => photoInputRef.current?.click()}
 							className='text-sm text-orange-500 hover:text-orange-400 font-medium transition-colors cursor-pointer disabled:opacity-50'>
-							{photoLoading ? 'Uploading…' : 'Change photo'}
+							{photoLoading ? t('profile.uploading') : t('profile.changePhoto')}
 						</button>
 
 						{photoError && (
@@ -193,19 +195,19 @@ const ProfilePanel = () => {
 							photoURL ? (
 								<img
 									src={photoURL}
-									alt='Profile'
+									alt={t('profile.title')}
 									className='w-5 h-5 rounded-full object-cover'
 								/>
 							) : (
 								<UserCircle size={18} />
 							)
 						}
-						title='Account'>
+						title={t('profile.account')}>
 
 						{/* Display name */}
 						<SettingsRow
-							label='Display name'
-							description='Your name shown across the app'>
+							label={t('profile.displayName')}
+							description={t('profile.displayNameDescription')}>
 							{editingName ? (
 								<div className='flex items-center gap-2'>
 									<input
@@ -241,8 +243,8 @@ const ProfilePanel = () => {
 
 						{/* Email */}
 						<SettingsRow
-							label='Email'
-							description='Your sign-in address'>
+							label={t('profile.email')}
+							description={t('profile.emailDescription')}>
 							<span className='text-sm text-text-secondary'>
 								{currentUser?.email ?? '—'}
 							</span>
@@ -250,11 +252,11 @@ const ProfilePanel = () => {
 
 						{/* Reset password */}
 						<SettingsRow
-							label='Change password'
-							description='Send a password reset email'>
+							label={t('profile.changePassword')}
+							description={t('profile.changePasswordDescription')}>
 							{resetSent ? (
 								<span className='text-sm text-green-600 flex items-center gap-1'>
-									<Check size={14} /> Email sent!
+									<Check size={14} /> {t('profile.emailSent')}
 								</span>
 							) : (
 								<button
@@ -263,7 +265,7 @@ const ProfilePanel = () => {
 									onClick={handleResetPassword}
 									className='flex items-center gap-2 text-sm text-orange-500 hover:text-orange-400 font-medium transition-colors cursor-pointer disabled:opacity-50'>
 									{resetLoading ? <Loader2 size={15} className='animate-spin' /> : <KeyRound size={15} />}
-									Send reset email
+									{t('profile.sendResetEmail')}
 								</button>
 							)}
 							{resetError && (
@@ -273,13 +275,13 @@ const ProfilePanel = () => {
 
 						{/* Delete account placeholder */}
 						<SettingsRow
-							label='Delete account'
-							description='Permanently remove your account and all data'>
+							label={t('profile.deleteAccount')}
+							description={t('profile.deleteAccountDescription')}>
 							<button
 								type='button'
 								className='flex items-center gap-2 text-sm text-red-500 hover:text-red-400 font-medium transition-colors cursor-pointer'>
 								<Trash2 size={15} />
-								Delete
+								{t('common.delete')}
 							</button>
 						</SettingsRow>
 					</SettingsSection>
@@ -291,11 +293,11 @@ const ProfilePanel = () => {
 						onClick={handleSignOut}
 						className='w-full flex items-center justify-center gap-2 py-3 rounded-xl border border-red-500/30 text-red-500 hover:bg-red-500/10 font-medium transition-colors disabled:opacity-60 cursor-pointer'>
 						{signingOut ? <Loader2 size={18} className='animate-spin' /> : <LogOut size={18} />}
-						Sign Out
+						{t('profile.signOut')}
 					</button>
 
 					<p className='text-center text-xs text-text-secondary pb-4'>
-						iGrocery v1.0.0
+						{t('version')}
 					</p>
 				</div>
 			</main>

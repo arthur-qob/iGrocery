@@ -4,6 +4,7 @@ import {
 	ShoppingCart,
 } from 'lucide-react'
 import type { GroceryList, UserProfile } from '@/utils/api'
+import { useTranslation } from 'react-i18next'
 
 const AVATAR_COLORS = [
 	'bg-orange-400',
@@ -57,9 +58,11 @@ const ListCard = ({
 	navigate: (path: string) => void
 	memberProfiles?: UserProfile[]
 }) => {
+	const { t, i18n } = useTranslation()
+
 	const isOpen = list.status === 'OPENED'
 	const date = list.createdAt
-		? new Date(list.createdAt).toLocaleDateString('en-US', {
+		? new Date(list.createdAt).toLocaleDateString(i18n.language, {
 				month: 'short',
 				day: 'numeric',
 				year: 'numeric',
@@ -104,7 +107,8 @@ const ListCard = ({
 						size={14}
 						className='text-text-tertiary'
 					/>
-					<span>{list.members.length} member{list.members.length !== 1 ? 's' : ''}</span>
+					{/* Fixed plural — was hand-rolled English-only hack */}
+					<span>{t('lists.memberCount', { count: list.members.length })}</span>
 				</div>
 			</div>
 
@@ -138,7 +142,7 @@ const ListCard = ({
 
 				<span
 					className={`ml-auto inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${isOpen ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
-					{isOpen ? 'OPEN' : 'CLOSED'}
+					{t(`lists.status.${list.status as 'OPENED' | 'CLOSED'}`)}
 				</span>
 			</div>
 		</div>

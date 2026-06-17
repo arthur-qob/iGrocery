@@ -2,12 +2,15 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { SignUp } from '@/utils/auth'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 
 interface SignUpFormProps {
 	onToggleForm?: () => void
 }
 
 const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
+	const { t } = useTranslation()
 	const navigate = useNavigate()
 	const location = useLocation()
 	const from = (location.state as { from?: string } | null)?.from ?? '/lists'
@@ -25,11 +28,11 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 		setError(null)
 
 		if (password !== confirmPassword) {
-			setError('Passwords do not match.')
+			setError(t('auth.errors.passwordsMismatch'))
 			return
 		}
 		if (password.length < 6) {
-			setError('Password must be at least 6 characters.')
+			setError(t('auth.errors.passwordTooShort'))
 			return
 		}
 
@@ -38,8 +41,8 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 			await SignUp({ mode: 'email&pswd', name, email, password })
 			navigate(from, { replace: true })
 		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : 'Sign up failed'
-			setError(friendlyError(msg))
+			const msg = err instanceof Error ? err.message : t('auth.errors.signUpFailed')
+			setError(friendlyError(msg, t))
 		} finally {
 			setLoading(false)
 		}
@@ -52,8 +55,8 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 			await SignUp({ mode: 'google', name: '', email: null, password: null })
 			navigate(from, { replace: true })
 		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : 'Sign up failed'
-			setError(friendlyError(msg))
+			const msg = err instanceof Error ? err.message : t('auth.errors.signUpFailed')
+			setError(friendlyError(msg, t))
 		} finally {
 			setLoading(false)
 		}
@@ -62,7 +65,7 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 	return (
 		<div className='w-full max-w-md px-8'>
 			<h1 className='text-3xl font-medium mb-10 text-center text-text-primary'>
-				Sign Up
+				{t('auth.signUp')}
 			</h1>
 
 			<form className='flex flex-col gap-5' onSubmit={handleSubmit}>
@@ -70,14 +73,14 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 					<label
 						htmlFor='signup-name'
 						className='text-sm text-text-secondary font-medium'>
-						Name
+						{t('auth.name')}
 					</label>
 					<input
 						autoFocus
 						type='text'
 						name='name'
 						id='signup-name'
-						placeholder='Enter your name'
+						placeholder={t('auth.enterName')}
 						value={name}
 						onChange={(e) => setName(e.target.value)}
 						required
@@ -89,13 +92,13 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 					<label
 						htmlFor='signup-email'
 						className='text-sm text-text-secondary font-medium'>
-						Email
+						{t('auth.email')}
 					</label>
 					<input
 						type='email'
 						name='email'
 						id='signup-email'
-						placeholder='Enter your email'
+						placeholder={t('auth.enterEmail')}
 						value={email}
 						onChange={(e) => setEmail(e.target.value)}
 						required
@@ -107,14 +110,14 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 					<label
 						htmlFor='signup-password'
 						className='text-sm text-text-secondary font-medium'>
-						Password
+						{t('auth.password')}
 					</label>
 					<div className='flex flex-row items-center justify-between border-b-2 border-border focus-within:border-orange-500 pb-2 transition-colors duration-200'>
 						<input
 							type={showPassword ? 'text' : 'password'}
 							name='password'
 							id='signup-password'
-							placeholder='Enter your password'
+							placeholder={t('auth.enterPassword')}
 							value={password}
 							onChange={(e) => setPassword(e.target.value)}
 							required
@@ -137,14 +140,14 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 					<label
 						htmlFor='signup-confirm-password'
 						className='text-sm text-text-secondary font-medium'>
-						Confirm Password
+						{t('auth.confirmPassword')}
 					</label>
 					<div className='flex flex-row items-center justify-between border-b-2 border-border focus-within:border-orange-500 pb-2 transition-colors duration-200'>
 						<input
 							type={showConfirmPassword ? 'text' : 'password'}
 							name='confirmPassword'
 							id='signup-confirm-password'
-							placeholder='Confirm your password'
+							placeholder={t('auth.confirmYourPassword')}
 							value={confirmPassword}
 							onChange={(e) => setConfirmPassword(e.target.value)}
 							required
@@ -176,12 +179,12 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 					disabled={loading}
 					className='w-full flex items-center justify-center gap-2 text-white font-medium text-lg py-3 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-300 mt-4'>
 					{loading ? <Loader2 size={20} className='animate-spin' /> : null}
-					Sign Up
+					{t('auth.signUp')}
 				</button>
 
 				<div className='flex items-center gap-4'>
 					<span className='flex-1 border-t border-border'></span>
-					<span className='text-text-secondary'>OR</span>
+					<span className='text-text-secondary'>{t('common.or')}</span>
 					<span className='flex-1 border-t border-border'></span>
 				</div>
 
@@ -190,7 +193,7 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 					onClick={handleGoogle}
 					disabled={loading}
 					className='w-full text-text-secondary font-medium text-lg py-3 rounded-xl border border-border hover:bg-bg-tertiary disabled:opacity-60 disabled:cursor-not-allowed transition-colors duration-300'>
-					Sign In with Google
+					{t('auth.signInWithGoogle')}
 				</button>
 			</form>
 
@@ -200,13 +203,13 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 						type='button'
 						onClick={onToggleForm}
 						className='text-orange-500 hover:text-orange-600 transition-colors duration-300 underline border-none cursor-pointer bg-transparent font-medium'>
-						Already have an account? Sign in now!
+						{t('auth.alreadyHaveAccount')}
 					</button>
 				) : (
 					<Link
 						to='/signin'
 						className='text-orange-500 hover:text-orange-600 transition-colors duration-300 underline font-medium'>
-						Already have an account? Sign in now!
+						{t('auth.alreadyHaveAccount')}
 					</Link>
 				)}
 			</div>
@@ -214,15 +217,15 @@ const SignUpForm = ({ onToggleForm }: SignUpFormProps) => {
 	)
 }
 
-function friendlyError(msg: string): string {
+function friendlyError(msg: string, t: TFunction): string {
 	if (msg.includes('email-already-in-use'))
-		return 'This email is already registered.'
+		return t('auth.errors.emailAlreadyInUse')
 	if (msg.includes('invalid-email'))
-		return 'Please enter a valid email address.'
+		return t('auth.errors.invalidEmail')
 	if (msg.includes('weak-password'))
-		return 'Password is too weak. Use at least 6 characters.'
+		return t('auth.errors.weakPassword')
 	if (msg.includes('network-request-failed'))
-		return 'Network error. Check your connection.'
+		return t('auth.errors.networkError')
 	return msg
 }
 

@@ -1,0 +1,310 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "create": "Create",
+    "loading": "Loading…",
+    "signOut": "Sign Out",
+    "settings": "Settings",
+    "profile": "Profile",
+    "theme": "Theme",
+    "or": "OR",
+    "enabled": "Enabled",
+    "blocked": "Blocked",
+    "enable": "Enable",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "signInWithGoogle": "Sign In with Google",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "confirmPassword": "Confirm Password",
+    "enterEmail": "Enter your email",
+    "enterPassword": "Enter your password",
+    "enterName": "Enter your name",
+    "confirmYourPassword": "Confirm your password",
+    "noAccountYet": "Don't have an account yet? Create one now!",
+    "alreadyHaveAccount": "Already have an account? Sign in now!",
+    "errors": {
+      "invalidCredential": "Invalid email or password.",
+      "tooManyRequests": "Too many attempts. Please try again later.",
+      "networkError": "Network error. Check your connection.",
+      "passwordsMismatch": "Passwords do not match.",
+      "passwordTooShort": "Password must be at least 6 characters.",
+      "emailAlreadyInUse": "This email is already registered.",
+      "invalidEmail": "Please enter a valid email address.",
+      "weakPassword": "Password is too weak. Use at least 6 characters.",
+      "signInFailed": "Sign in failed",
+      "signUpFailed": "Sign up failed"
+    }
+  },
+  "nav": {
+    "settings": "Settings",
+    "profile": "Profile",
+    "theme": "Theme",
+    "signOut": "Sign Out"
+  },
+  "lists": {
+    "title": "Lists",
+    "subtitle": "Organize and manage your grocery lists",
+    "newList": "New List",
+    "scanQR": "Scan QR",
+    "noListsTitle": "No lists yet",
+    "noListsSubtitle": "Create your first grocery list to start organizing your shopping",
+    "createNewList": "Create New List",
+    "loadError": "Failed to load lists. Please try again.",
+    "status": {
+      "OPENED": "OPEN",
+      "CLOSED": "CLOSED"
+    },
+    "memberCount_one": "{{count}} member",
+    "memberCount_other": "{{count}} members"
+  },
+  "createList": {
+    "title": "Create New List",
+    "namePlaceholder": "List name",
+    "cancel": "Cancel",
+    "create": "Create"
+  },
+  "list": {
+    "listNamePlaceholder": "List name",
+    "addItem": "Add item",
+    "share": {
+      "title": "Share List",
+      "description": "Anyone with this link can join this list. The link expires in 7 days.",
+      "copy": "Copy",
+      "copied": "Copied",
+      "showQR": "Show QR Code",
+      "hideQR": "Hide QR Code",
+      "error": "Failed to generate invite link."
+    },
+    "editItem": {
+      "title": "Edit Item",
+      "name": "Name",
+      "quantity": "Quantity",
+      "price": "Price",
+      "weight": "Weight",
+      "weightOptional": "(optional)",
+      "unit": "Unit",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "addItemModal": {
+      "title": "Add Item",
+      "name": "Name",
+      "quantity": "Quantity",
+      "price": "Price",
+      "weight": "Weight",
+      "weightOptional": "(optional)",
+      "unit": "Unit",
+      "cancel": "Cancel",
+      "add": "Add Item"
+    },
+    "table": {
+      "item": "Item",
+      "qty": "Qty",
+      "weight": "Weight",
+      "price": "Price",
+      "total": "Total"
+    },
+    "totals": {
+      "groceriesTotal": "Groceries Total",
+      "totalToPay": "Total to pay"
+    },
+    "qty": "Qty: {{qty}}",
+    "priceEach": "{{price}} ea",
+    "units": {
+      "kg": "kg",
+      "lbs": "lbs",
+      "oz": "oz"
+    },
+    "status": {
+      "OPENED": "OPENED",
+      "CLOSED": "CLOSED"
+    },
+    "deleteList": {
+      "title": "Delete list",
+      "message": "Are you sure you want to delete this list? This action cannot be undone.",
+      "confirm": "Delete"
+    },
+    "leaveList": {
+      "title": "Leave list",
+      "message": "Are you sure you want to leave this list?",
+      "confirm": "Leave"
+    },
+    "errors": {
+      "notFound": "List not found.",
+      "loadFailed": "Failed to load list.",
+      "deleted": "This list has been deleted."
+    },
+    "tooltip": {
+      "deleteList": "Delete list",
+      "leaveList": "Leave list"
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your preferences",
+    "appearance": {
+      "title": "Appearance",
+      "theme": "Theme",
+      "themeDescription": "Choose your preferred color scheme"
+    },
+    "lists": {
+      "title": "Lists",
+      "sortOrder": "Default sort order",
+      "sortOrderDescription": "How lists are ordered when you open the app",
+      "autoArchive": "Auto-archive closed lists",
+      "autoArchiveDescription": "Automatically hide lists marked as closed",
+      "autoArchiveAlert": "This feature is not yet implemented",
+      "sortOptions": {
+        "name": "Name (A\u2013Z)",
+        "dateCreated": "Date created",
+        "dateModified": "Last modified"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "pushNotifications": "Push notifications",
+      "descriptionGranted": "You will be notified when list members make changes.",
+      "descriptionDenied": "Notifications are blocked. Enable them in your browser settings.",
+      "descriptionDefault": "Allow iGrocery to send you push notifications."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "subtitle": "Manage your account",
+    "changePhoto": "Change photo",
+    "uploading": "Uploading\u2026",
+    "account": "Account",
+    "displayName": "Display name",
+    "displayNameDescription": "Your name shown across the app",
+    "email": "Email",
+    "emailDescription": "Your sign-in address",
+    "changePassword": "Change password",
+    "changePasswordDescription": "Send a password reset email",
+    "emailSent": "Email sent!",
+    "sendResetEmail": "Send reset email",
+    "deleteAccount": "Delete account",
+    "deleteAccountDescription": "Permanently remove your account and all data",
+    "signOut": "Sign Out",
+    "errors": {
+      "resetFailed": "Failed to send reset email. Try again.",
+      "photoUploadFailed": "Failed to upload photo. Try again."
+    }
+  },
+  "invite": {
+    "youveBeenInvited": "You've been invited to join",
+    "description": "Would you like to join this grocery list? You'll be able to view and edit items together with the other members.",
+    "joinList": "Join List",
+    "joining": "Joining\u2026",
+    "decline": "Decline",
+    "alreadyMember": "Already a member? Go to the list",
+    "invalidTitle": "Invalid Invite",
+    "goToMyLists": "Go to my lists",
+    "errors": {
+      "invalidOrExpired": "This invite link is invalid or has expired.",
+      "joinFailed": "Failed to join the list. Please try again."
+    }
+  },
+  "landing": {
+    "badge": "Smart Shopping Made Simple",
+    "heroTitle": "Shop Smarter, Together",
+    "heroSubtitle": "Create organized shopping lists, collaborate with friends and family in real-time, and never forget an item again. All in one beautiful app.",
+    "getStartedFree": "Get Started Free",
+    "signIn": "Sign In",
+    "featuresTitle": "Powerful Features",
+    "featuresSubtitle": "Everything you need to organize your shopping and collaborate with loved ones",
+    "features": {
+      "smartLists": {
+        "title": "Smart Lists",
+        "description": "Create unlimited shopping lists with detailed item specifications including quantities, units, and weights.",
+        "customQuantities": "Custom quantities",
+        "unitConversions": "Unit conversions",
+        "weightTracking": "Weight tracking"
+      },
+      "collaborate": {
+        "title": "Collaborate in Real-Time",
+        "description": "Invite friends and family to share and collaborate on lists. See updates instantly as they shop.",
+        "inviteByApp": "Invite by app",
+        "realtimeSync": "Real-time sync",
+        "seeWhosShopping": "See who's shopping"
+      },
+      "quickShare": {
+        "title": "Quick Share",
+        "description": "Generate QR codes for instant sharing, or invite via email. Your way, your choice.",
+        "qrCodeSharing": "QR code sharing",
+        "emailInvites": "Email invites",
+        "secureLinks": "Secure links"
+      },
+      "itemDetails": {
+        "title": "Item Details",
+        "description": "Track quantities, units, weights, and more. Perfect for meal planning and budget tracking.",
+        "detailedSpecs": "Detailed specs",
+        "notesTags": "Notes & tags",
+        "priceEstimates": "Price estimates"
+      },
+      "emailSharing": {
+        "title": "Email Sharing",
+        "description": "Send invitations via email to make it easy for anyone to join your shopping lists.",
+        "oneClickJoin": "One-click join",
+        "noAppRequired": "No app required",
+        "easyAccess": "Easy access"
+      },
+      "alwaysSynced": {
+        "title": "Always Synced",
+        "description": "Your lists are always up to date across all your devices. Shop from phone, tablet, or desktop.",
+        "crossDeviceSync": "Cross-device sync",
+        "offlineAccess": "Offline access",
+        "autoSave": "Auto-save"
+      }
+    },
+    "howItWorksTitle": "How It Works",
+    "steps": {
+      "step1": {
+        "title": "Create Your List",
+        "description": "Start by creating a new shopping list. Add items with specific quantities, units, weights, and notes for each product."
+      },
+      "step2": {
+        "title": "Invite Collaborators",
+        "description": "Share your list by generating a QR code, sending an email invite, or inviting directly from the app. Multiple sharing options for maximum flexibility."
+      },
+      "step3": {
+        "title": "Shop Together",
+        "description": "See real-time updates as family or friends add items, check off purchases, and make changes. Stay perfectly coordinated while shopping."
+      },
+      "step4": {
+        "title": "Stay Organized",
+        "description": "Check off items as you buy them, reuse lists for recurring shopping trips, and keep your shopping history for future reference."
+      }
+    },
+    "ctaTitle": "Ready to Shop Smarter?",
+    "ctaSubtitle": "Join thousands of users who are already organizing their shopping with iGrocery. Create your first list today\u2014it's completely free!",
+    "startFreeAccount": "Start Your Free Account",
+    "footer": {
+      "tagline": "Smart shopping lists for families and friends.",
+      "product": "Product",
+      "company": "Company",
+      "legal": "Legal",
+      "links": {
+        "features": "Features",
+        "pricing": "Pricing",
+        "security": "Security",
+        "about": "About",
+        "blog": "Blog",
+        "contact": "Contact",
+        "privacy": "Privacy",
+        "terms": "Terms",
+        "cookies": "Cookies"
+      },
+      "copyright": "\u00a9 2026 iGrocery. All rights reserved."
+    }
+  },
+  "version": "iGrocery v1.0.0"
+}

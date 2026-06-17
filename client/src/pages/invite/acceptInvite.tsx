@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { Loader2, ShoppingCart, X } from 'lucide-react'
 import { Api } from '@/utils/api'
+import { useTranslation } from 'react-i18next'
 
 const AcceptInvite = () => {
+	const { t } = useTranslation()
 	const { token } = useParams<{ token: string }>()
 	const navigate = useNavigate()
 
@@ -21,9 +23,9 @@ const AcceptInvite = () => {
 				setListId(listId)
 				setListName(listName)
 			})
-			.catch(() => setLoadError('This invite link is invalid or has expired.'))
+			.catch(() => setLoadError(t('invite.errors.invalidOrExpired')))
 			.finally(() => setLoading(false))
-	}, [token])
+	}, [token, t])
 
 	const handleAccept = async () => {
 		if (!token) return
@@ -33,7 +35,7 @@ const AcceptInvite = () => {
 			const { listId } = await Api.acceptInvite(token)
 			navigate(`/lists/${listId}`, { replace: true })
 		} catch {
-			setAcceptError('Failed to join the list. Please try again.')
+			setAcceptError(t('invite.errors.joinFailed'))
 			setAccepting(false)
 		}
 	}
@@ -57,14 +59,14 @@ const AcceptInvite = () => {
 					<X size={32} className='text-red-400' />
 				</div>
 				<div>
-					<h1 className='text-2xl font-semibold text-text-primary mb-2'>Invalid Invite</h1>
+					<h1 className='text-2xl font-semibold text-text-primary mb-2'>{t('invite.invalidTitle')}</h1>
 					<p className='text-text-secondary'>{loadError}</p>
 				</div>
 				<button
 					type='button'
 					onClick={() => navigate('/lists')}
 					className='cursor-pointer px-6 py-2.5 rounded-xl bg-green-500 hover:bg-green-600 text-white font-medium transition-colors'>
-					Go to my lists
+					{t('invite.goToMyLists')}
 				</button>
 			</section>
 		)
@@ -78,13 +80,13 @@ const AcceptInvite = () => {
 
 			<div className='flex flex-col gap-2'>
 				<p className='text-text-secondary text-sm font-medium uppercase tracking-wider'>
-					You've been invited to join
+					{t('invite.youveBeenInvited')}
 				</p>
 				<h1 className='text-3xl font-bold text-text-primary'>{listName}</h1>
 			</div>
 
 			<p className='text-text-secondary max-w-sm'>
-				Would you like to join this grocery list? You'll be able to view and edit items together with the other members.
+				{t('invite.description')}
 			</p>
 
 			{acceptError && (
@@ -100,14 +102,14 @@ const AcceptInvite = () => {
 					disabled={accepting}
 					className='cursor-pointer w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-green-500 hover:bg-green-600 disabled:opacity-60 text-white font-semibold text-lg transition-colors'>
 					{accepting ? <Loader2 size={18} className='animate-spin' /> : null}
-					{accepting ? 'Joining…' : 'Join List'}
+					{accepting ? t('invite.joining') : t('invite.joinList')}
 				</button>
 				<button
 					type='button'
 					onClick={handleDecline}
 					disabled={accepting}
 					className='cursor-pointer w-full px-6 py-3 rounded-xl border border-border text-text-secondary hover:bg-bg-tertiary disabled:opacity-60 font-medium text-lg transition-colors'>
-					Decline
+					{t('invite.decline')}
 				</button>
 			</div>
 
@@ -116,7 +118,7 @@ const AcceptInvite = () => {
 					type='button'
 					onClick={() => navigate(`/lists/${listId}`)}
 					className='text-sm text-text-tertiary hover:text-text-secondary transition-colors underline'>
-					Already a member? Go to the list
+					{t('invite.alreadyMember')}
 				</button>
 			)}
 		</section>

@@ -1,5 +1,6 @@
 import { Loader2, X } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 
 type Props = {
 	onClose: () => void
@@ -7,6 +8,7 @@ type Props = {
 }
 
 const CreateList = ({ onClose, onCreate }: Props) => {
+	const { t } = useTranslation()
 	const [name, setName] = useState('')
 	const [loading, setLoading] = useState(false)
 
@@ -27,7 +29,7 @@ const CreateList = ({ onClose, onCreate }: Props) => {
 				onClick={(e) => e.stopPropagation()}>
 				<div className='flex items-center justify-between mb-6'>
 					<h2 className='text-xl font-semibold text-text-primary'>
-						Create New List
+						{t('createList.title')}
 					</h2>
 					<button
 						type='button'
@@ -40,7 +42,7 @@ const CreateList = ({ onClose, onCreate }: Props) => {
 				<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
 					<input
 						type='text'
-						placeholder='List name'
+						placeholder={t('createList.namePlaceholder')}
 						autoFocus
 						value={name}
 						onChange={(e) => setName(e.target.value)}
@@ -52,14 +54,14 @@ const CreateList = ({ onClose, onCreate }: Props) => {
 							type='button'
 							className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
 							onClick={onClose}>
-							Cancel
+							{t('createList.cancel')}
 						</button>
 						<button
 							type='submit'
 							disabled={loading || !name.trim()}
 							className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 disabled:cursor-not-allowed text-white transition-colors'>
 							{loading ? <Loader2 size={14} className='animate-spin' /> : null}
-							Create
+							{t('createList.create')}
 						</button>
 					</div>
 				</form>
