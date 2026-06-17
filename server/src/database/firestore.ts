@@ -3,7 +3,7 @@ import type { DocumentSnapshot } from 'firebase-admin/firestore'
 import { randomBytes } from 'node:crypto'
 import { db } from '../config/firebase.js'
 
-type WeightUnit = 'kg' | 'lbs' | 'oz'
+type WeightUnit = 'kg' | 'lbs' | 'oz' | 'l' | 'ml'
 
 export type GroceryItem = {
 	id?: string
@@ -46,7 +46,11 @@ function toData<T>(snap: DocumentSnapshot): T {
 class FirestoreDatabase {
 	// ── Lists ────────────────────────────────────────────────────────────────
 
-	async createList(userId: string, name: string, currency = 'USD'): Promise<string> {
+	async createList(
+		userId: string,
+		name: string,
+		currency = 'USD'
+	): Promise<string> {
 		const ref = await db.collection('lists').add({
 			name,
 			status: 'OPENED',
@@ -54,7 +58,7 @@ class FirestoreDatabase {
 			members: [userId],
 			currency,
 			createdAt: FieldValue.serverTimestamp(),
-			updatedAt: FieldValue.serverTimestamp(),
+			updatedAt: FieldValue.serverTimestamp()
 		})
 		return ref.id
 	}
@@ -80,30 +84,36 @@ class FirestoreDatabase {
 	): Promise<void> {
 		await db.doc(`lists/${listId}`).update({
 			...data,
-			updatedAt: FieldValue.serverTimestamp(),
+			updatedAt: FieldValue.serverTimestamp()
 		})
 	}
 
 	async touchList(listId: string): Promise<void> {
-		await db.doc(`lists/${listId}`).update({ updatedAt: FieldValue.serverTimestamp() })
+		await db
+			.doc(`lists/${listId}`)
+			.update({ updatedAt: FieldValue.serverTimestamp() })
 	}
 
 	async shareList(listId: string, targetUserId: string): Promise<void> {
 		await db.doc(`lists/${listId}`).update({
-			members: FieldValue.arrayUnion(targetUserId),
+			members: FieldValue.arrayUnion(targetUserId)
 		})
 	}
 
 	async unshareList(listId: string, targetUserId: string): Promise<void> {
 		await db.doc(`lists/${listId}`).update({
-			members: FieldValue.arrayRemove(targetUserId),
+			members: FieldValue.arrayRemove(targetUserId)
 		})
 	}
 
 	async copyList(sourceListId: string, userId: string): Promise<string> {
 		const source = await this.getList(sourceListId)
 		if (!source) throw new Error('List not found')
-		const newListId = await this.createList(userId, `${source.name} (copy)`, source.currency ?? 'USD')
+		const newListId = await this.createList(
+			userId,
+			`${source.name} (copy)`,
+			source.currency ?? 'USD'
+		)
 		const items = await this.getItems(sourceListId)
 		await Promise.all(
 			items.map(({ id: _id, isChecked: _checked, ...itemData }) =>
@@ -174,7 +184,7 @@ class FirestoreDatabase {
 
 	async removeFcmToken(uid: string, token: string): Promise<void> {
 		await db.doc(`users/${uid}`).update({
-			fcmTokens: FieldValue.arrayRemove(token),
+			fcmTokens: FieldValue.arrayRemove(token)
 		})
 	}
 
@@ -202,7 +212,7 @@ class FirestoreDatabase {
 		await db.doc(`invites/${token}`).set({
 			listId,
 			createdBy,
-			expiresAt: Timestamp.fromDate(expiresAt),
+			expiresAt: Timestamp.fromDate(expiresAt)
 		})
 		return token
 	}

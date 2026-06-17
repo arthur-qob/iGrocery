@@ -13,12 +13,17 @@ import {
 	query,
 	serverTimestamp,
 	updateDoc,
-	where,
+	where
 } from 'firebase/firestore'
-import type { DocumentData, QueryConstraint, Timestamp, Unsubscribe } from 'firebase/firestore'
+import type {
+	DocumentData,
+	QueryConstraint,
+	Timestamp,
+	Unsubscribe
+} from 'firebase/firestore'
 import { app } from './firebaseConfig'
 
-type WeightUnit = 'kg' | 'lbs' | 'oz'
+type WeightUnit = 'kg' | 'lbs' | 'oz' | 'l' | 'ml'
 
 export type GroceryItem = {
 	id?: string
@@ -58,12 +63,18 @@ class FirestoreDatabase {
 		return snap.docs.map((d) => ({ id: d.id, ...d.data() }) as T)
 	}
 
-	async addDocument<T extends DocumentData>(path: string, data: T): Promise<string> {
+	async addDocument<T extends DocumentData>(
+		path: string,
+		data: T
+	): Promise<string> {
 		const ref = await addDoc(collection(this.db, path), data)
 		return ref.id
 	}
 
-	async updateDocument(path: string, data: Partial<DocumentData>): Promise<void> {
+	async updateDocument(
+		path: string,
+		data: Partial<DocumentData>
+	): Promise<void> {
 		await updateDoc(doc(this.db, path), data)
 	}
 
@@ -90,7 +101,7 @@ class FirestoreDatabase {
 			status: 'OPENED',
 			userId,
 			members: [userId],
-			createdAt: serverTimestamp(),
+			createdAt: serverTimestamp()
 		})
 	}
 
@@ -106,25 +117,39 @@ class FirestoreDatabase {
 		return this.getDocument<GroceryList>(`lists/${listId}`)
 	}
 
-	async updateList(listId: string, data: Partial<Omit<GroceryList, 'id' | 'userId' | 'members' | 'createdAt'>>): Promise<void> {
+	async updateList(
+		listId: string,
+		data: Partial<
+			Omit<GroceryList, 'id' | 'userId' | 'members' | 'createdAt'>
+		>
+	): Promise<void> {
 		return this.updateDocument(`lists/${listId}`, data)
 	}
 
 	async shareList(listId: string, targetUserId: string): Promise<void> {
-		await updateDoc(doc(this.db, `lists/${listId}`), { members: arrayUnion(targetUserId) })
+		await updateDoc(doc(this.db, `lists/${listId}`), {
+			members: arrayUnion(targetUserId)
+		})
 	}
 
 	async unshareList(listId: string, targetUserId: string): Promise<void> {
-		await updateDoc(doc(this.db, `lists/${listId}`), { members: arrayRemove(targetUserId) })
+		await updateDoc(doc(this.db, `lists/${listId}`), {
+			members: arrayRemove(targetUserId)
+		})
 	}
 
 	async deleteList(listId: string): Promise<void> {
 		const items = await this.getItems(listId)
-		await Promise.all(items.map((item) => this.deleteItem(listId, item.id!)))
+		await Promise.all(
+			items.map((item) => this.deleteItem(listId, item.id!))
+		)
 		return this.deleteDocument(`lists/${listId}`)
 	}
 
-	subscribeLists(userId: string, onChange: (lists: GroceryList[]) => void): Unsubscribe {
+	subscribeLists(
+		userId: string,
+		onChange: (lists: GroceryList[]) => void
+	): Unsubscribe {
 		return this.subscribe<GroceryList>(
 			'lists',
 			onChange,
@@ -135,7 +160,10 @@ class FirestoreDatabase {
 
 	// ── Items ────────────────────────────────────────────────────────────────
 
-	async createItem(listId: string, item: Omit<GroceryItem, 'id'>): Promise<string> {
+	async createItem(
+		listId: string,
+		item: Omit<GroceryItem, 'id'>
+	): Promise<string> {
 		return this.addDocument(`lists/${listId}/items`, item)
 	}
 
@@ -143,7 +171,11 @@ class FirestoreDatabase {
 		return this.getCollection<GroceryItem>(`lists/${listId}/items`)
 	}
 
-	async updateItem(listId: string, itemId: string, data: Partial<GroceryItem>): Promise<void> {
+	async updateItem(
+		listId: string,
+		itemId: string,
+		data: Partial<GroceryItem>
+	): Promise<void> {
 		return this.updateDocument(`lists/${listId}/items/${itemId}`, data)
 	}
 
@@ -151,7 +183,10 @@ class FirestoreDatabase {
 		return this.deleteDocument(`lists/${listId}/items/${itemId}`)
 	}
 
-	subscribeItems(listId: string, onChange: (items: GroceryItem[]) => void): Unsubscribe {
+	subscribeItems(
+		listId: string,
+		onChange: (items: GroceryItem[]) => void
+	): Unsubscribe {
 		return this.subscribe<GroceryItem>(`lists/${listId}/items`, onChange)
 	}
 }

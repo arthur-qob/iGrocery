@@ -1,315 +1,317 @@
 {
-  "common": {
-    "cancel": "Cancelar",
-    "save": "Salvar",
-    "delete": "Excluir",
-    "create": "Criar",
-    "loading": "Carregando…",
-    "signOut": "Sair",
-    "settings": "Configurações",
-    "profile": "Perfil",
-    "theme": "Tema",
-    "or": "OU",
-    "enabled": "Ativado",
-    "blocked": "Bloqueado",
-    "enable": "Ativar",
-    "close": "Fechar",
-    "copy": "Copiar",
-    "copied": "Copiado"
-  },
-  "auth": {
-    "signIn": "Entrar",
-    "signUp": "Criar conta",
-    "signInWithGoogle": "Entrar com o Google",
-    "email": "E-mail",
-    "password": "Senha",
-    "name": "Nome",
-    "confirmPassword": "Confirmar senha",
-    "enterEmail": "Digite seu e-mail",
-    "enterPassword": "Digite sua senha",
-    "enterName": "Digite seu nome",
-    "confirmYourPassword": "Confirme sua senha",
-    "noAccountYet": "Ainda não tem uma conta? Crie agora!",
-    "alreadyHaveAccount": "Já tem uma conta? Entre agora!",
-    "errors": {
-      "invalidCredential": "E-mail ou senha inválidos.",
-      "tooManyRequests": "Muitas tentativas. Tente novamente mais tarde.",
-      "networkError": "Erro de rede. Verifique sua conexão.",
-      "passwordsMismatch": "As senhas não coincidem.",
-      "passwordTooShort": "A senha deve ter pelo menos 6 caracteres.",
-      "emailAlreadyInUse": "Este e-mail já está cadastrado.",
-      "invalidEmail": "Por favor, insira um endereço de e-mail válido.",
-      "weakPassword": "Senha muito fraca. Use pelo menos 6 caracteres.",
-      "signInFailed": "Falha ao entrar",
-      "signUpFailed": "Falha ao criar conta"
-    }
-  },
-  "nav": {
-    "settings": "Configurações",
-    "profile": "Perfil",
-    "theme": "Tema",
-    "signOut": "Sair"
-  },
-  "lists": {
-    "title": "Listas",
-    "subtitle": "Organize e gerencie suas listas de compras",
-    "newList": "Nova Lista",
-    "scanQR": "Ler QR",
-    "noListsTitle": "Nenhuma lista ainda",
-    "noListsSubtitle": "Crie sua primeira lista de compras para começar a se organizar",
-    "createNewList": "Criar Nova Lista",
-    "loadError": "Falha ao carregar listas. Tente novamente.",
-    "status": {
-      "OPENED": "ABERTA",
-      "CLOSED": "FECHADA"
-    },
-    "memberCount_one": "{{count}} membro",
-    "memberCount_other": "{{count}} membros",
-    "selectedCount_one": "{{count}} selecionada",
-    "selectedCount_other": "{{count}} selecionadas"
-  },
-  "createList": {
-    "title": "Criar Nova Lista",
-    "namePlaceholder": "Nome da lista",
-    "cancel": "Cancelar",
-    "create": "Criar"
-  },
-  "list": {
-    "listNamePlaceholder": "Nome da lista",
-    "addItem": "Adicionar item",
-    "share": {
-      "title": "Compartilhar Lista",
-      "description": "Qualquer pessoa com este link pode entrar nesta lista. O link expira em 7 dias.",
-      "copy": "Copiar",
-      "copied": "Copiado",
-      "showQR": "Mostrar QR Code",
-      "hideQR": "Ocultar QR Code",
-      "error": "Falha ao gerar o link de convite."
-    },
-    "editItem": {
-      "title": "Editar Item",
-      "name": "Nome",
-      "quantity": "Quantidade",
-      "price": "Preço",
-      "weight": "Peso",
-      "weightOptional": "(opcional)",
-      "unit": "Unidade",
-      "cancel": "Cancelar",
-      "save": "Salvar"
-    },
-    "addItemModal": {
-      "title": "Adicionar Item",
-      "name": "Nome",
-      "quantity": "Quantidade",
-      "price": "Preço",
-      "weight": "Peso",
-      "weightOptional": "(opcional)",
-      "unit": "Unidade",
-      "cancel": "Cancelar",
-      "add": "Adicionar Item"
-    },
-    "table": {
-      "item": "Item",
-      "qty": "Qtd.",
-      "weight": "Peso",
-      "price": "Preço",
-      "total": "Total"
-    },
-    "totals": {
-      "groceriesTotal": "Total das compras",
-      "totalToPay": "Total a pagar"
-    },
-    "qty": "Qtd.: {{qty}}",
-    "priceEach": "{{price}} un.",
-    "units": {
-      "kg": "kg",
-      "lbs": "lbs",
-      "oz": "oz"
-    },
-    "status": {
-      "OPENED": "ABERTA",
-      "CLOSED": "FECHADA"
-    },
-    "deleteList": {
-      "title": "Excluir lista",
-      "message": "Tem certeza que deseja excluir esta lista? Esta ação não pode ser desfeita.",
-      "confirm": "Excluir"
-    },
-    "leaveList": {
-      "title": "Sair da lista",
-      "message": "Tem certeza que deseja sair desta lista?",
-      "confirm": "Sair"
-    },
-    "errors": {
-      "notFound": "Lista não encontrada.",
-      "loadFailed": "Falha ao carregar a lista.",
-      "deleted": "Esta lista foi excluída."
-    },
-    "copyList": {
-      "tooltip": "Duplicar lista"
-    },
-    "tooltip": {
-      "deleteList": "Excluir lista",
-      "leaveList": "Sair da lista"
-    }
-  },
-  "settings": {
-    "title": "Configurações",
-    "subtitle": "Gerencie suas preferências",
-    "appearance": {
-      "title": "Aparência",
-      "theme": "Tema",
-      "themeDescription": "Escolha seu esquema de cores preferido"
-    },
-    "lists": {
-      "title": "Listas",
-      "sortOrder": "Ordem de classificação padrão",
-      "sortOrderDescription": "Como as listas são ordenadas ao abrir o app",
-      "autoArchive": "Arquivar listas fechadas automaticamente",
-      "autoArchiveDescription": "Ocultar automaticamente listas marcadas como fechadas",
-      "autoArchiveAlert": "Este recurso ainda não está implementado",
-      "sortOptions": {
-        "name": "Nome (A–Z)",
-        "dateCreated": "Data de criação",
-        "dateModified": "Última modificação"
-      }
-    },
-    "notifications": {
-      "title": "Notificações",
-      "pushNotifications": "Notificações push",
-      "descriptionGranted": "Você será notificado quando membros da lista fizerem alterações.",
-      "descriptionDenied": "Notificações bloqueadas. Ative-as nas configurações do seu navegador.",
-      "descriptionDefault": "Permitir que o iGrocery envie notificações push."
-    }
-  },
-  "profile": {
-    "title": "Perfil",
-    "subtitle": "Gerencie sua conta",
-    "changePhoto": "Alterar foto",
-    "uploading": "Enviando…",
-    "account": "Conta",
-    "displayName": "Nome de exibição",
-    "displayNameDescription": "Seu nome exibido no app",
-    "email": "E-mail",
-    "emailDescription": "Seu endereço de acesso",
-    "changePassword": "Alterar senha",
-    "changePasswordDescription": "Enviar e-mail de redefinição de senha",
-    "emailSent": "E-mail enviado!",
-    "sendResetEmail": "Enviar e-mail de redefinição",
-    "deleteAccount": "Excluir conta",
-    "deleteAccountDescription": "Remover permanentemente sua conta e todos os dados",
-    "signOut": "Sair",
-    "errors": {
-      "resetFailed": "Falha ao enviar o e-mail de redefinição. Tente novamente.",
-      "photoUploadFailed": "Falha ao enviar a foto. Tente novamente."
-    }
-  },
-  "invite": {
-    "youveBeenInvited": "Você foi convidado para entrar em",
-    "description": "Deseja entrar nesta lista de compras? Você poderá visualizar e editar os itens junto com os outros membros.",
-    "joinList": "Entrar na Lista",
-    "joining": "Entrando…",
-    "decline": "Recusar",
-    "alreadyMember": "Já é membro? Ir para a lista",
-    "invalidTitle": "Convite Inválido",
-    "goToMyLists": "Ir para minhas listas",
-    "errors": {
-      "invalidOrExpired": "Este link de convite é inválido ou expirou.",
-      "joinFailed": "Falha ao entrar na lista. Tente novamente."
-    }
-  },
-  "landing": {
-    "badge": "Compras Inteligentes Simplificadas",
-    "heroTitle": "Compre com Mais Inteligência, Juntos",
-    "heroSubtitle": "Crie listas de compras organizadas, colabore com amigos e família em tempo real e nunca esqueça um item. Tudo em um app incrível.",
-    "getStartedFree": "Comece Grátis",
-    "signIn": "Entrar",
-    "featuresTitle": "Recursos Poderosos",
-    "featuresSubtitle": "Tudo que você precisa para organizar suas compras e colaborar com quem ama",
-    "features": {
-      "smartLists": {
-        "title": "Listas Inteligentes",
-        "description": "Crie listas de compras ilimitadas com especificações detalhadas de itens, incluindo quantidades, unidades e pesos.",
-        "customQuantities": "Quantidades personalizadas",
-        "unitConversions": "Conversão de unidades",
-        "weightTracking": "Controle de peso"
-      },
-      "collaborate": {
-        "title": "Colabore em Tempo Real",
-        "description": "Convide amigos e família para compartilhar e colaborar nas listas. Veja as atualizações instantaneamente enquanto fazem compras.",
-        "inviteByApp": "Convide pelo app",
-        "realtimeSync": "Sincronização em tempo real",
-        "seeWhosShopping": "Veja quem está comprando"
-      },
-      "quickShare": {
-        "title": "Compartilhamento Rápido",
-        "description": "Gere QR codes para compartilhamento instantâneo ou convide por e-mail. Do seu jeito.",
-        "qrCodeSharing": "Compartilhamento por QR code",
-        "emailInvites": "Convites por e-mail",
-        "secureLinks": "Links seguros"
-      },
-      "itemDetails": {
-        "title": "Detalhes dos Itens",
-        "description": "Acompanhe quantidades, unidades, pesos e muito mais. Perfeito para planejamento de refeições e controle de orçamento.",
-        "detailedSpecs": "Especificações detalhadas",
-        "notesTags": "Notas e etiquetas",
-        "priceEstimates": "Estimativas de preço"
-      },
-      "emailSharing": {
-        "title": "Compartilhamento por E-mail",
-        "description": "Envie convites por e-mail para facilitar a entrada de qualquer pessoa nas suas listas de compras.",
-        "oneClickJoin": "Entrar com um clique",
-        "noAppRequired": "Sem necessidade de app",
-        "easyAccess": "Acesso fácil"
-      },
-      "alwaysSynced": {
-        "title": "Sempre Sincronizado",
-        "description": "Suas listas estão sempre atualizadas em todos os seus dispositivos. Compre pelo celular, tablet ou desktop.",
-        "crossDeviceSync": "Sincronização entre dispositivos",
-        "offlineAccess": "Acesso offline",
-        "autoSave": "Salvamento automático"
-      }
-    },
-    "howItWorksTitle": "Como Funciona",
-    "steps": {
-      "step1": {
-        "title": "Crie Sua Lista",
-        "description": "Comece criando uma nova lista de compras. Adicione itens com quantidades, unidades, pesos e observações específicas para cada produto."
-      },
-      "step2": {
-        "title": "Convide Colaboradores",
-        "description": "Compartilhe sua lista gerando um QR code, enviando um convite por e-mail ou convidando diretamente pelo app. Múltiplas opções para máxima flexibilidade."
-      },
-      "step3": {
-        "title": "Compre Juntos",
-        "description": "Veja atualizações em tempo real enquanto familiares ou amigos adicionam itens, marcam compras e fazem alterações. Fique perfeitamente coordenado durante as compras."
-      },
-      "step4": {
-        "title": "Fique Organizado",
-        "description": "Marque os itens à medida que compra, reutilize listas para compras recorrentes e mantenha seu histórico de compras para referência futura."
-      }
-    },
-    "ctaTitle": "Pronto para Comprar com Mais Inteligência?",
-    "ctaSubtitle": "Junte-se a milhares de usuários que já organizam suas compras com o iGrocery. Crie sua primeira lista hoje — é completamente gratuito!",
-    "startFreeAccount": "Criar Conta Gratuita",
-    "footer": {
-      "tagline": "Listas de compras inteligentes para famílias e amigos.",
-      "product": "Produto",
-      "company": "Empresa",
-      "legal": "Legal",
-      "links": {
-        "features": "Recursos",
-        "pricing": "Preços",
-        "security": "Segurança",
-        "about": "Sobre",
-        "blog": "Blog",
-        "contact": "Contato",
-        "privacy": "Privacidade",
-        "terms": "Termos",
-        "cookies": "Cookies"
-      },
-      "copyright": "© 2026 iGrocery. Todos os direitos reservados."
-    }
-  },
-  "version": "iGrocery v1.0.1"
+	"common": {
+		"cancel": "Cancelar",
+		"save": "Salvar",
+		"delete": "Excluir",
+		"create": "Criar",
+		"loading": "Carregando…",
+		"signOut": "Sair",
+		"settings": "Configurações",
+		"profile": "Perfil",
+		"theme": "Tema",
+		"or": "OU",
+		"enabled": "Ativado",
+		"blocked": "Bloqueado",
+		"enable": "Ativar",
+		"close": "Fechar",
+		"copy": "Copiar",
+		"copied": "Copiado"
+	},
+	"auth": {
+		"signIn": "Entrar",
+		"signUp": "Criar conta",
+		"signInWithGoogle": "Entrar com o Google",
+		"email": "E-mail",
+		"password": "Senha",
+		"name": "Nome",
+		"confirmPassword": "Confirmar senha",
+		"enterEmail": "Digite seu e-mail",
+		"enterPassword": "Digite sua senha",
+		"enterName": "Digite seu nome",
+		"confirmYourPassword": "Confirme sua senha",
+		"noAccountYet": "Ainda não tem uma conta? Crie agora!",
+		"alreadyHaveAccount": "Já tem uma conta? Entre agora!",
+		"errors": {
+			"invalidCredential": "E-mail ou senha inválidos.",
+			"tooManyRequests": "Muitas tentativas. Tente novamente mais tarde.",
+			"networkError": "Erro de rede. Verifique sua conexão.",
+			"passwordsMismatch": "As senhas não coincidem.",
+			"passwordTooShort": "A senha deve ter pelo menos 6 caracteres.",
+			"emailAlreadyInUse": "Este e-mail já está cadastrado.",
+			"invalidEmail": "Por favor, insira um endereço de e-mail válido.",
+			"weakPassword": "Senha muito fraca. Use pelo menos 6 caracteres.",
+			"signInFailed": "Falha ao entrar",
+			"signUpFailed": "Falha ao criar conta"
+		}
+	},
+	"nav": {
+		"settings": "Configurações",
+		"profile": "Perfil",
+		"theme": "Tema",
+		"signOut": "Sair"
+	},
+	"lists": {
+		"title": "Listas",
+		"subtitle": "Organize e gerencie suas listas de compras",
+		"newList": "Nova Lista",
+		"scanQR": "Ler QR",
+		"noListsTitle": "Nenhuma lista ainda",
+		"noListsSubtitle": "Crie sua primeira lista de compras para começar a se organizar",
+		"createNewList": "Criar Nova Lista",
+		"loadError": "Falha ao carregar listas. Tente novamente.",
+		"status": {
+			"OPENED": "ABERTA",
+			"CLOSED": "FECHADA"
+		},
+		"memberCount_one": "{{count}} membro",
+		"memberCount_other": "{{count}} membros",
+		"selectedCount_one": "{{count}} selecionada",
+		"selectedCount_other": "{{count}} selecionadas"
+	},
+	"createList": {
+		"title": "Criar Nova Lista",
+		"namePlaceholder": "Nome da lista",
+		"cancel": "Cancelar",
+		"create": "Criar"
+	},
+	"list": {
+		"listNamePlaceholder": "Nome da lista",
+		"addItem": "Adicionar item",
+		"share": {
+			"title": "Compartilhar Lista",
+			"description": "Qualquer pessoa com este link pode entrar nesta lista. O link expira em 7 dias.",
+			"copy": "Copiar",
+			"copied": "Copiado",
+			"showQR": "Mostrar QR Code",
+			"hideQR": "Ocultar QR Code",
+			"error": "Falha ao gerar o link de convite."
+		},
+		"editItem": {
+			"title": "Editar Item",
+			"name": "Nome",
+			"quantity": "Quantidade",
+			"price": "Preço",
+			"weight": "Peso",
+			"weightOptional": "(opcional)",
+			"unit": "Unidade",
+			"cancel": "Cancelar",
+			"save": "Salvar"
+		},
+		"addItemModal": {
+			"title": "Adicionar Item",
+			"name": "Nome",
+			"quantity": "Quantidade",
+			"price": "Preço",
+			"weight": "Peso",
+			"weightOptional": "(opcional)",
+			"unit": "Unidade",
+			"cancel": "Cancelar",
+			"add": "Adicionar Item"
+		},
+		"table": {
+			"item": "Item",
+			"qty": "Qtd.",
+			"weight": "Peso",
+			"price": "Preço",
+			"total": "Total"
+		},
+		"totals": {
+			"groceriesTotal": "Total das compras",
+			"totalToPay": "Total a pagar"
+		},
+		"qty": "Qtd.: {{qty}}",
+		"priceEach": "{{price}} un.",
+		"units": {
+			"kg": "kg",
+			"lbs": "lbs",
+			"oz": "oz",
+			"l": "l",
+			"ml": "ml"
+		},
+		"status": {
+			"OPENED": "ABERTA",
+			"CLOSED": "FECHADA"
+		},
+		"deleteList": {
+			"title": "Excluir lista",
+			"message": "Tem certeza que deseja excluir esta lista? Esta ação não pode ser desfeita.",
+			"confirm": "Excluir"
+		},
+		"leaveList": {
+			"title": "Sair da lista",
+			"message": "Tem certeza que deseja sair desta lista?",
+			"confirm": "Sair"
+		},
+		"errors": {
+			"notFound": "Lista não encontrada.",
+			"loadFailed": "Falha ao carregar a lista.",
+			"deleted": "Esta lista foi excluída."
+		},
+		"copyList": {
+			"tooltip": "Duplicar lista"
+		},
+		"tooltip": {
+			"deleteList": "Excluir lista",
+			"leaveList": "Sair da lista"
+		}
+	},
+	"settings": {
+		"title": "Configurações",
+		"subtitle": "Gerencie suas preferências",
+		"appearance": {
+			"title": "Aparência",
+			"theme": "Tema",
+			"themeDescription": "Escolha seu esquema de cores preferido"
+		},
+		"lists": {
+			"title": "Listas",
+			"sortOrder": "Ordem de classificação padrão",
+			"sortOrderDescription": "Como as listas são ordenadas ao abrir o app",
+			"autoArchive": "Arquivar listas fechadas automaticamente",
+			"autoArchiveDescription": "Ocultar automaticamente listas marcadas como fechadas",
+			"autoArchiveAlert": "Este recurso ainda não está implementado",
+			"sortOptions": {
+				"name": "Nome (A–Z)",
+				"dateCreated": "Data de criação",
+				"dateModified": "Última modificação"
+			}
+		},
+		"notifications": {
+			"title": "Notificações",
+			"pushNotifications": "Notificações push",
+			"descriptionGranted": "Você será notificado quando membros da lista fizerem alterações.",
+			"descriptionDenied": "Notificações bloqueadas. Ative-as nas configurações do seu navegador.",
+			"descriptionDefault": "Permitir que o iGrocery envie notificações push."
+		}
+	},
+	"profile": {
+		"title": "Perfil",
+		"subtitle": "Gerencie sua conta",
+		"changePhoto": "Alterar foto",
+		"uploading": "Enviando…",
+		"account": "Conta",
+		"displayName": "Nome de exibição",
+		"displayNameDescription": "Seu nome exibido no app",
+		"email": "E-mail",
+		"emailDescription": "Seu endereço de acesso",
+		"changePassword": "Alterar senha",
+		"changePasswordDescription": "Enviar e-mail de redefinição de senha",
+		"emailSent": "E-mail enviado!",
+		"sendResetEmail": "Enviar e-mail de redefinição",
+		"deleteAccount": "Excluir conta",
+		"deleteAccountDescription": "Remover permanentemente sua conta e todos os dados",
+		"signOut": "Sair",
+		"errors": {
+			"resetFailed": "Falha ao enviar o e-mail de redefinição. Tente novamente.",
+			"photoUploadFailed": "Falha ao enviar a foto. Tente novamente."
+		}
+	},
+	"invite": {
+		"youveBeenInvited": "Você foi convidado para entrar em",
+		"description": "Deseja entrar nesta lista de compras? Você poderá visualizar e editar os itens junto com os outros membros.",
+		"joinList": "Entrar na Lista",
+		"joining": "Entrando…",
+		"decline": "Recusar",
+		"alreadyMember": "Já é membro? Ir para a lista",
+		"invalidTitle": "Convite Inválido",
+		"goToMyLists": "Ir para minhas listas",
+		"errors": {
+			"invalidOrExpired": "Este link de convite é inválido ou expirou.",
+			"joinFailed": "Falha ao entrar na lista. Tente novamente."
+		}
+	},
+	"landing": {
+		"badge": "Compras Inteligentes Simplificadas",
+		"heroTitle": "Compre com Mais Inteligência, Juntos",
+		"heroSubtitle": "Crie listas de compras organizadas, colabore com amigos e família em tempo real e nunca esqueça um item. Tudo em um app incrível.",
+		"getStartedFree": "Comece Grátis",
+		"signIn": "Entrar",
+		"featuresTitle": "Recursos Poderosos",
+		"featuresSubtitle": "Tudo que você precisa para organizar suas compras e colaborar com quem ama",
+		"features": {
+			"smartLists": {
+				"title": "Listas Inteligentes",
+				"description": "Crie listas de compras ilimitadas com especificações detalhadas de itens, incluindo quantidades, unidades e pesos.",
+				"customQuantities": "Quantidades personalizadas",
+				"unitConversions": "Conversão de unidades",
+				"weightTracking": "Controle de peso"
+			},
+			"collaborate": {
+				"title": "Colabore em Tempo Real",
+				"description": "Convide amigos e família para compartilhar e colaborar nas listas. Veja as atualizações instantaneamente enquanto fazem compras.",
+				"inviteByApp": "Convide pelo app",
+				"realtimeSync": "Sincronização em tempo real",
+				"seeWhosShopping": "Veja quem está comprando"
+			},
+			"quickShare": {
+				"title": "Compartilhamento Rápido",
+				"description": "Gere QR codes para compartilhamento instantâneo ou convide por e-mail. Do seu jeito.",
+				"qrCodeSharing": "Compartilhamento por QR code",
+				"emailInvites": "Convites por e-mail",
+				"secureLinks": "Links seguros"
+			},
+			"itemDetails": {
+				"title": "Detalhes dos Itens",
+				"description": "Acompanhe quantidades, unidades, pesos e muito mais. Perfeito para planejamento de refeições e controle de orçamento.",
+				"detailedSpecs": "Especificações detalhadas",
+				"notesTags": "Notas e etiquetas",
+				"priceEstimates": "Estimativas de preço"
+			},
+			"emailSharing": {
+				"title": "Compartilhamento por E-mail",
+				"description": "Envie convites por e-mail para facilitar a entrada de qualquer pessoa nas suas listas de compras.",
+				"oneClickJoin": "Entrar com um clique",
+				"noAppRequired": "Sem necessidade de app",
+				"easyAccess": "Acesso fácil"
+			},
+			"alwaysSynced": {
+				"title": "Sempre Sincronizado",
+				"description": "Suas listas estão sempre atualizadas em todos os seus dispositivos. Compre pelo celular, tablet ou desktop.",
+				"crossDeviceSync": "Sincronização entre dispositivos",
+				"offlineAccess": "Acesso offline",
+				"autoSave": "Salvamento automático"
+			}
+		},
+		"howItWorksTitle": "Como Funciona",
+		"steps": {
+			"step1": {
+				"title": "Crie Sua Lista",
+				"description": "Comece criando uma nova lista de compras. Adicione itens com quantidades, unidades, pesos e observações específicas para cada produto."
+			},
+			"step2": {
+				"title": "Convide Colaboradores",
+				"description": "Compartilhe sua lista gerando um QR code, enviando um convite por e-mail ou convidando diretamente pelo app. Múltiplas opções para máxima flexibilidade."
+			},
+			"step3": {
+				"title": "Compre Juntos",
+				"description": "Veja atualizações em tempo real enquanto familiares ou amigos adicionam itens, marcam compras e fazem alterações. Fique perfeitamente coordenado durante as compras."
+			},
+			"step4": {
+				"title": "Fique Organizado",
+				"description": "Marque os itens à medida que compra, reutilize listas para compras recorrentes e mantenha seu histórico de compras para referência futura."
+			}
+		},
+		"ctaTitle": "Pronto para Comprar com Mais Inteligência?",
+		"ctaSubtitle": "Junte-se a milhares de usuários que já organizam suas compras com o iGrocery. Crie sua primeira lista hoje — é completamente gratuito!",
+		"startFreeAccount": "Criar Conta Gratuita",
+		"footer": {
+			"tagline": "Listas de compras inteligentes para famílias e amigos.",
+			"product": "Produto",
+			"company": "Empresa",
+			"legal": "Legal",
+			"links": {
+				"features": "Recursos",
+				"pricing": "Preços",
+				"security": "Segurança",
+				"about": "Sobre",
+				"blog": "Blog",
+				"contact": "Contato",
+				"privacy": "Privacidade",
+				"terms": "Termos",
+				"cookies": "Cookies"
+			},
+			"copyright": "© 2026 iGrocery. Todos os direitos reservados."
+		}
+	},
+	"version": "iGrocery v1.0.1"
 }

@@ -14,7 +14,17 @@ import {
 	X
 } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getList, getItems, createItem, updateItem, deleteItem, updateList, deleteList, leaveList, copyList } from '@/utils/sync'
+import {
+	getList,
+	getItems,
+	createItem,
+	updateItem,
+	deleteItem,
+	updateList,
+	deleteList,
+	leaveList,
+	copyList
+} from '@/utils/sync'
 import { Api } from '@/utils/api'
 import type { GroceryList, GroceryItem } from '@/utils/api'
 import { useCurrency, CURRENCY_OPTIONS } from '@/hooks/useCurrency'
@@ -23,7 +33,7 @@ import { useTranslation } from 'react-i18next'
 
 // ── Edit Item Modal ──────────────────────────────────────────────────────────
 
-type WeightUnit = 'kg' | 'lbs' | 'oz'
+type WeightUnit = 'kg' | 'lbs' | 'oz' | 'l' | 'ml'
 
 type EditItemModalProps = {
 	item: GroceryItem
@@ -36,8 +46,12 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 	const [name, setName] = useState(item.name)
 	const [quantity, setQuantity] = useState(String(item.quantity))
 	const [price, setPrice] = useState(String(item.price))
-	const [weightValue, setWeightValue] = useState(String(item.weight?.value ?? ''))
-	const [weightUnit, setWeightUnit] = useState<WeightUnit>(item.weight?.unit ?? 'kg')
+	const [weightValue, setWeightValue] = useState(
+		String(item.weight?.value ?? '')
+	)
+	const [weightUnit, setWeightUnit] = useState<WeightUnit>(
+		item.weight?.unit ?? 'kg'
+	)
 	const [loading, setLoading] = useState(false)
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -46,7 +60,7 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 		const data: Partial<Omit<GroceryItem, 'id'>> = {
 			name: name.trim(),
 			quantity: parseInt(quantity, 10),
-			price: parseFloat(price),
+			price: parseFloat(price)
 		}
 		if (weightValue) {
 			data.weight = { value: parseFloat(weightValue), unit: weightUnit }
@@ -63,7 +77,9 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 				className='bg-surface rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md p-6'
 				onClick={(e) => e.stopPropagation()}>
 				<div className='flex items-center justify-between mb-6'>
-					<h2 className='text-xl font-semibold text-text-primary'>{t('list.editItem.title')}</h2>
+					<h2 className='text-xl font-semibold text-text-primary'>
+						{t('list.editItem.title')}
+					</h2>
 					<button
 						type='button'
 						className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary hover:text-text-secondary transition-colors'
@@ -72,9 +88,13 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 					</button>
 				</div>
 
-				<form className='flex flex-col gap-4' onSubmit={handleSubmit}>
+				<form
+					className='flex flex-col gap-4'
+					onSubmit={handleSubmit}>
 					<div className='flex flex-col gap-1'>
-						<label className='text-sm font-medium text-text-primary'>{t('list.editItem.name')}</label>
+						<label className='text-sm font-medium text-text-primary'>
+							{t('list.editItem.name')}
+						</label>
 						<input
 							type='text'
 							autoFocus
@@ -86,7 +106,9 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 					</div>
 					<div className='grid grid-cols-2 gap-4'>
 						<div className='flex flex-col gap-1'>
-							<label className='text-sm font-medium text-text-primary'>{t('list.editItem.quantity')}</label>
+							<label className='text-sm font-medium text-text-primary'>
+								{t('list.editItem.quantity')}
+							</label>
 							<input
 								type='number'
 								min={1}
@@ -97,7 +119,9 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							/>
 						</div>
 						<div className='flex flex-col gap-1'>
-							<label className='text-sm font-medium text-text-primary'>{t('list.editItem.price')}</label>
+							<label className='text-sm font-medium text-text-primary'>
+								{t('list.editItem.price')}
+							</label>
 							<input
 								type='number'
 								step='0.01'
@@ -113,7 +137,9 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 						<div className='flex flex-col gap-1'>
 							<label className='text-sm font-medium text-text-primary'>
 								{t('list.editItem.weight')}{' '}
-								<span className='text-text-tertiary font-normal'>{t('list.editItem.weightOptional')}</span>
+								<span className='text-text-tertiary font-normal'>
+									{t('list.editItem.weightOptional')}
+								</span>
 							</label>
 							<input
 								type='number'
@@ -125,14 +151,22 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							/>
 						</div>
 						<div className='flex flex-col gap-1'>
-							<label className='text-sm font-medium text-text-primary'>{t('list.editItem.unit')}</label>
+							<label className='text-sm font-medium text-text-primary'>
+								{t('list.editItem.unit')}
+							</label>
 							<select
 								value={weightUnit}
-								onChange={(e) => setWeightUnit(e.target.value as WeightUnit)}
+								onChange={(e) =>
+									setWeightUnit(e.target.value as WeightUnit)
+								}
 								className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-surface text-text-primary'>
 								<option value='kg'>{t('list.units.kg')}</option>
-								<option value='lbs'>{t('list.units.lbs')}</option>
+								<option value='lbs'>
+									{t('list.units.lbs')}
+								</option>
 								<option value='oz'>{t('list.units.oz')}</option>
+								<option value='l'>{t('list.units.l')}</option>
+								<option value='ml'>{t('list.units.ml')}</option>
 							</select>
 						</div>
 					</div>
@@ -147,7 +181,12 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							type='submit'
 							disabled={loading}
 							className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white transition-colors'>
-							{loading ? <Loader2 size={14} className='animate-spin' /> : null}
+							{loading ? (
+								<Loader2
+									size={14}
+									className='animate-spin'
+								/>
+							) : null}
 							{t('list.editItem.save')}
 						</button>
 					</div>
@@ -193,7 +232,10 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 		if (!inviteUrl) return
 		if (!qrDataUrl) {
 			const QRCode = await import('qrcode')
-			const dataUrl = await QRCode.default.toDataURL(inviteUrl, { margin: 1, width: 200 })
+			const dataUrl = await QRCode.default.toDataURL(inviteUrl, {
+				margin: 1,
+				width: 200
+			})
 			setQrDataUrl(dataUrl)
 		}
 		setShowQr((v) => !v)
@@ -207,7 +249,9 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 				className='bg-surface rounded-2xl shadow-xl w-full max-w-md mx-4 p-6'
 				onClick={(e) => e.stopPropagation()}>
 				<div className='flex items-center justify-between mb-4'>
-					<h2 className='text-xl font-semibold text-text-primary'>{t('list.share.title')}</h2>
+					<h2 className='text-xl font-semibold text-text-primary'>
+						{t('list.share.title')}
+					</h2>
 					<button
 						type='button'
 						className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary transition-colors'
@@ -218,12 +262,17 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 
 				{loading && (
 					<div className='flex items-center justify-center py-8'>
-						<Loader2 size={24} className='animate-spin text-text-tertiary' />
+						<Loader2
+							size={24}
+							className='animate-spin text-text-tertiary'
+						/>
 					</div>
 				)}
 
 				{error && (
-					<p className='text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2'>{error}</p>
+					<p className='text-sm text-red-500 bg-red-50 rounded-lg px-3 py-2'>
+						{error}
+					</p>
 				)}
 
 				{inviteUrl && (
@@ -243,8 +292,14 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 								type='button'
 								onClick={handleCopy}
 								className='shrink-0 cursor-pointer flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium bg-green-500 hover:bg-green-600 text-white transition-colors'>
-								{copied ? <Check size={15} /> : <Copy size={15} />}
-								{copied ? t('list.share.copied') : t('list.share.copy')}
+								{copied ? (
+									<Check size={15} />
+								) : (
+									<Copy size={15} />
+								)}
+								{copied
+									? t('list.share.copied')
+									: t('list.share.copy')}
 							</button>
 						</div>
 
@@ -253,12 +308,18 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 							onClick={handleToggleQr}
 							className='cursor-pointer flex items-center justify-center gap-2 px-4 py-2 rounded-lg border border-border text-sm text-text-secondary hover:bg-bg-secondary transition-colors'>
 							<QrCode size={16} />
-							{showQr ? t('list.share.hideQR') : t('list.share.showQR')}
+							{showQr
+								? t('list.share.hideQR')
+								: t('list.share.showQR')}
 						</button>
 
 						{showQr && qrDataUrl && (
 							<div className='flex justify-center p-3 bg-white rounded-xl'>
-								<img src={qrDataUrl} alt='Invite QR code' className='rounded' />
+								<img
+									src={qrDataUrl}
+									alt='Invite QR code'
+									className='rounded'
+								/>
 							</div>
 						)}
 					</div>
@@ -279,7 +340,14 @@ type ConfirmModalProps = {
 	onClose: () => void
 }
 
-const ConfirmModal = ({ title, message, confirmLabel, danger = false, onConfirm, onClose }: ConfirmModalProps) => {
+const ConfirmModal = ({
+	title,
+	message,
+	confirmLabel,
+	danger = false,
+	onConfirm,
+	onClose
+}: ConfirmModalProps) => {
 	const { t } = useTranslation()
 	return (
 		<div
@@ -288,7 +356,9 @@ const ConfirmModal = ({ title, message, confirmLabel, danger = false, onConfirm,
 			<div
 				className='bg-surface rounded-2xl shadow-xl w-full max-w-sm mx-4 p-6'
 				onClick={(e) => e.stopPropagation()}>
-				<h2 className='text-lg font-semibold text-text-primary'>{title}</h2>
+				<h2 className='text-lg font-semibold text-text-primary'>
+					{title}
+				</h2>
 				<p className='mt-2 text-sm text-text-secondary'>{message}</p>
 				<div className='flex justify-end gap-3 mt-6'>
 					<button
@@ -300,7 +370,9 @@ const ConfirmModal = ({ title, message, confirmLabel, danger = false, onConfirm,
 					<button
 						type='button'
 						className={`cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-white transition-colors ${
-							danger ? 'bg-red-500 hover:bg-red-600' : 'bg-orange-500 hover:bg-orange-600'
+							danger
+								? 'bg-red-500 hover:bg-red-600'
+								: 'bg-orange-500 hover:bg-orange-600'
 						}`}
 						onClick={onConfirm}>
 						{confirmLabel}
@@ -334,7 +406,8 @@ const List = () => {
 	const [isCurrencyOpen, setIsCurrencyOpen] = useState(false)
 	const [leavingOrDeletingList, setLeavingOrDeletingList] = useState(false)
 	const [copyingList, setCopyingList] = useState(false)
-	const [confirmDialog, setConfirmDialog] = useState<ConfirmModalProps | null>(null)
+	const [confirmDialog, setConfirmDialog] =
+		useState<ConfirmModalProps | null>(null)
 
 	const isOwner = list ? list.userId === currentUser?.uid : null
 
@@ -361,7 +434,10 @@ const List = () => {
 		Promise.all([getList(listId), getItems(listId)])
 			.then(([l, i]) => {
 				if (cancelled) return
-				if (!l) { setError(t('list.errors.notFound')); return }
+				if (!l) {
+					setError(t('list.errors.notFound'))
+					return
+				}
 				setList(l)
 				setListName(l.name)
 				setItems(i)
@@ -373,7 +449,9 @@ const List = () => {
 				if (!cancelled) setLoading(false)
 			})
 
-		return () => { cancelled = true }
+		return () => {
+			cancelled = true
+		}
 	}, [listId, t])
 
 	// ── Live polling ──────────────────────────────────────────────────────────
@@ -385,7 +463,7 @@ const List = () => {
 			try {
 				const [freshList, freshItems] = await Promise.all([
 					Api.getList(listId),
-					Api.getItems(listId),
+					Api.getItems(listId)
 				])
 				setItems(freshItems)
 				setList(freshList)
@@ -399,13 +477,19 @@ const List = () => {
 				polling.current = false
 			}
 		}
-		const id = setInterval(() => { void tick() }, 5000)
+		const id = setInterval(() => {
+			void tick()
+		}, 5000)
 		return () => clearInterval(id)
 	}, [listId, loading, t])
 
 	// ── Derived state ─────────────────────────────────────────────────────────
-	const allChecked = items.length > 0 && items.every((item) => !!item.isChecked)
-	const groceriesTotal = items.reduce((sum, item) => sum + item.quantity * item.price, 0)
+	const allChecked =
+		items.length > 0 && items.every((item) => !!item.isChecked)
+	const groceriesTotal = items.reduce(
+		(sum, item) => sum + item.quantity * item.price,
+		0
+	)
 	const totalToPay = items.reduce(
 		(sum, item) => sum + (item.isChecked ? item.quantity * item.price : 0),
 		0
@@ -441,7 +525,9 @@ const List = () => {
 		if (!listId || !item.id) return
 		const newChecked = !item.isChecked
 		setItems((prev) =>
-			prev.map((i) => (i.id === item.id ? { ...i, isChecked: newChecked } : i))
+			prev.map((i) =>
+				i.id === item.id ? { ...i, isChecked: newChecked } : i
+			)
 		)
 		await updateItem(listId, item.id, { isChecked: newChecked })
 	}
@@ -452,7 +538,11 @@ const List = () => {
 		const updated = items.map((i) => ({ ...i, isChecked: newChecked }))
 		setItems(updated)
 		await Promise.all(
-			updated.map((i) => i.id ? updateItem(listId, i.id, { isChecked: newChecked }) : Promise.resolve())
+			updated.map((i) =>
+				i.id
+					? updateItem(listId, i.id, { isChecked: newChecked })
+					: Promise.resolve()
+			)
 		)
 	}
 
@@ -463,17 +553,23 @@ const List = () => {
 		const item: Omit<GroceryItem, 'id'> = {
 			name: addName.trim(),
 			quantity: parseInt(addQty, 10),
-			price: parseFloat(addPrice),
+			price: parseFloat(addPrice)
 		}
 		if (addWeightVal) {
-			item.weight = { value: parseFloat(addWeightVal), unit: addWeightUnit }
+			item.weight = {
+				value: parseFloat(addWeightVal),
+				unit: addWeightUnit
+			}
 		}
 		await createItem(listId, item)
 		// Re-fetch items to get the server-assigned ID
 		const fresh = await getItems(listId)
 		setItems(fresh)
 		setShowAddItemModal(false)
-		setAddName(''); setAddQty('1'); setAddPrice('0'); setAddWeightVal('')
+		setAddName('')
+		setAddQty('1')
+		setAddPrice('0')
+		setAddWeightVal('')
 		setAddLoading(false)
 	}
 
@@ -512,7 +608,7 @@ const List = () => {
 				await deleteList(listId!)
 				navigate('/lists')
 			},
-			onClose: () => setConfirmDialog(null),
+			onClose: () => setConfirmDialog(null)
 		})
 	}
 
@@ -527,7 +623,7 @@ const List = () => {
 				await leaveList(listId!)
 				navigate('/lists')
 			},
-			onClose: () => setConfirmDialog(null),
+			onClose: () => setConfirmDialog(null)
 		})
 	}
 
@@ -566,8 +662,12 @@ const List = () => {
 					className='flex-1 min-w-0 text-2xl md:text-3xl font-semibold text-text-primary py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent'
 					value={listName}
 					onChange={(e) => handleNameChange(e.target.value)}
-					onFocus={() => { nameInputFocused.current = true }}
-					onBlur={() => { nameInputFocused.current = false }}
+					onFocus={() => {
+						nameInputFocused.current = true
+					}}
+					onBlur={() => {
+						nameInputFocused.current = false
+					}}
 					disabled={loading}
 					placeholder={t('list.listNamePlaceholder')}
 				/>
@@ -583,14 +683,18 @@ const List = () => {
 						</button>
 						<div
 							className={`absolute top-10 right-0 w-max bg-surface rounded-lg shadow-lg border border-border overflow-hidden ${
-								isCurrencyOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+								isCurrencyOpen
+									? 'opacity-100 visible'
+									: 'opacity-0 invisible'
 							} transition-all duration-200 z-50`}>
 							<ul className='p-2 space-y-1'>
 								{CURRENCY_OPTIONS.map((opt) => (
 									<li
 										key={opt.value}
 										className='text-sm text-text-primary hover:bg-green-100 transition-colors duration-200 rounded-md px-3 py-1.5 cursor-pointer'
-										onMouseDown={() => handleCurrencyChange(opt.value)}>
+										onMouseDown={() =>
+											handleCurrencyChange(opt.value)
+										}>
 										{opt.label}
 									</li>
 								))}
@@ -605,18 +709,25 @@ const List = () => {
 							className='inline-flex items-center gap-1 p-2 rounded-lg text-sm text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors'
 							onClick={() => setIsSelectOpen(!isSelectOpen)}
 							onBlur={() => setIsSelectOpen(false)}>
-							{t(`list.status.${list?.status ?? 'OPENED'}` as const)} <ChevronDown size={14} />
+							{t(
+								`list.status.${list?.status ?? 'OPENED'}` as const
+							)}{' '}
+							<ChevronDown size={14} />
 						</button>
 						<div
 							className={`absolute top-10 right-0 w-max bg-surface rounded-lg shadow-lg border border-border overflow-hidden ${
-								isSelectOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+								isSelectOpen
+									? 'opacity-100 visible'
+									: 'opacity-0 invisible'
 							} transition-all duration-200 z-50`}>
 							<ul className='p-2 space-y-1'>
 								{(['OPENED', 'CLOSED'] as const).map((type) => (
 									<li
 										key={type}
 										className='text-sm text-text-primary hover:bg-green-100 transition-colors duration-200 rounded-md px-3 py-1.5 cursor-pointer'
-										onMouseDown={() => handleStatusChange(type)}>
+										onMouseDown={() =>
+											handleStatusChange(type)
+										}>
 										{t(`list.status.${type}`)}
 									</li>
 								))}
@@ -640,7 +751,10 @@ const List = () => {
 						className='cursor-pointer p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors disabled:opacity-50'
 						onClick={() => void handleCopyList()}>
 						{copyingList ? (
-							<Loader2 size={18} className='animate-spin' />
+							<Loader2
+								size={18}
+								className='animate-spin'
+							/>
 						) : (
 							<Copy size={18} />
 						)}
@@ -655,7 +769,10 @@ const List = () => {
 							title={t('list.tooltip.deleteList')}
 							onClick={handleDeleteList}>
 							{leavingOrDeletingList ? (
-								<Loader2 size={18} className='animate-spin' />
+								<Loader2
+									size={18}
+									className='animate-spin'
+								/>
 							) : (
 								<Trash size={18} />
 							)}
@@ -669,7 +786,10 @@ const List = () => {
 							title={t('list.tooltip.leaveList')}
 							onClick={handleLeaveList}>
 							{leavingOrDeletingList ? (
-								<Loader2 size={18} className='animate-spin' />
+								<Loader2
+									size={18}
+									className='animate-spin'
+								/>
 							) : (
 								<LogOut size={18} />
 							)}
@@ -702,7 +822,9 @@ const List = () => {
 										<input
 											type='checkbox'
 											checked={!!item.isChecked}
-											onChange={() => handleCheckItem(item)}
+											onChange={() =>
+												handleCheckItem(item)
+											}
 											className='mt-0.5 shrink-0 cursor-pointer'
 										/>
 										<div className='flex-1 min-w-0'>
@@ -715,33 +837,58 @@ const List = () => {
 													<button
 														type='button'
 														className='cursor-pointer p-1.5 rounded text-text-tertiary hover:text-blue-500 hover:bg-blue-50 transition-colors'
-														onClick={() => setEditingItem(item)}>
+														onClick={() =>
+															setEditingItem(item)
+														}>
 														<Edit size={15} />
 													</button>
 													<button
 														type='button'
 														className='cursor-pointer p-1.5 rounded text-text-tertiary hover:text-red-500 hover:bg-red-50 transition-colors'
-														onClick={() => handleDeleteItem(item)}>
+														onClick={() =>
+															handleDeleteItem(
+																item
+															)
+														}>
 														<Trash size={15} />
 													</button>
 												</div>
 											</div>
 											<div className='mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary'>
-												<span className={item.isChecked ? 'line-through text-text-tertiary' : ''}>
-													{t('list.qty', { qty: item.quantity })}
+												<span
+													className={
+														item.isChecked
+															? 'line-through text-text-tertiary'
+															: ''
+													}>
+													{t('list.qty', {
+														qty: item.quantity
+													})}
 												</span>
 												{item.weight && (
 													<span
 														className={`inline-flex items-center gap-0.5 bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full text-xs ${item.isChecked ? 'opacity-50' : ''}`}>
-														{item.weight.value} {t(`list.units.${item.weight.unit as WeightUnit}`)}
+														{item.weight.value}{' '}
+														{t(
+															`list.units.${item.weight.unit as WeightUnit}`
+														)}
 													</span>
 												)}
-												<span className={item.isChecked ? 'line-through text-text-tertiary' : ''}>
-													{t('list.priceEach', { price: fmt(item.price) })}
+												<span
+													className={
+														item.isChecked
+															? 'line-through text-text-tertiary'
+															: ''
+													}>
+													{t('list.priceEach', {
+														price: fmt(item.price)
+													})}
 												</span>
 											</div>
 											<div className='mt-1 text-sm font-semibold text-text-primary text-right'>
-												{fmt(item.quantity * item.price)}
+												{fmt(
+													item.quantity * item.price
+												)}
 											</div>
 										</div>
 									</div>
@@ -762,12 +909,20 @@ const List = () => {
 					{!loading && (
 						<div className='md:hidden flex flex-col gap-2 rounded-xl border border-border bg-bg-secondary p-4'>
 							<div className='flex items-center justify-between text-sm'>
-								<span className='font-semibold text-text-primary'>{t('list.totals.groceriesTotal')}</span>
-								<span className='font-bold text-text-primary'>{fmt(groceriesTotal)}</span>
+								<span className='font-semibold text-text-primary'>
+									{t('list.totals.groceriesTotal')}
+								</span>
+								<span className='font-bold text-text-primary'>
+									{fmt(groceriesTotal)}
+								</span>
 							</div>
 							<div className='flex items-center justify-between text-sm pt-2 border-t border-border'>
-								<span className='font-semibold text-text-primary'>{t('list.totals.totalToPay')}</span>
-								<span className='font-bold text-green-600'>{fmt(totalToPay)}</span>
+								<span className='font-semibold text-text-primary'>
+									{t('list.totals.totalToPay')}
+								</span>
+								<span className='font-bold text-green-600'>
+									{fmt(totalToPay)}
+								</span>
 							</div>
 						</div>
 					)}
@@ -784,27 +939,55 @@ const List = () => {
 											onChange={handleCheckAllItems}
 										/>
 									</th>
-									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.item')}</th>
-									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.qty')}</th>
-									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.weight')}</th>
-									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.price')}</th>
-									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>{t('list.table.total')}</th>
+									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>
+										{t('list.table.item')}
+									</th>
+									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>
+										{t('list.table.qty')}
+									</th>
+									<th className='text-left text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>
+										{t('list.table.weight')}
+									</th>
+									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>
+										{t('list.table.price')}
+									</th>
+									<th className='text-right text-xs font-semibold text-text-secondary uppercase tracking-wider px-4 py-3'>
+										{t('list.table.total')}
+									</th>
 									<th className='w-20' />
 								</tr>
 							</thead>
 							<tbody>
 								{loading
-									? Array.from({ length: 5 }).map((_, index) => (
-											<tr key={index} className='border-b border-border-light animate-pulse'>
-												<td className='px-4 py-3'><div className='h-4 w-4 rounded bg-border' /></td>
-												<td className='px-4 py-3'><div className='h-4 w-28 rounded bg-border' /></td>
-												<td className='px-4 py-3'><div className='h-4 w-8 rounded bg-border' /></td>
-												<td className='px-4 py-3'><div className='h-5 w-16 rounded-full bg-border-light' /></td>
-												<td className='px-4 py-3'><div className='h-4 w-14 rounded bg-border ml-auto' /></td>
-												<td className='px-4 py-3'><div className='h-4 w-14 rounded bg-border ml-auto' /></td>
-												<td className='px-4 py-3'><div className='h-4 w-16 rounded bg-border-light ml-auto' /></td>
-											</tr>
-										))
+									? Array.from({ length: 5 }).map(
+											(_, index) => (
+												<tr
+													key={index}
+													className='border-b border-border-light animate-pulse'>
+													<td className='px-4 py-3'>
+														<div className='h-4 w-4 rounded bg-border' />
+													</td>
+													<td className='px-4 py-3'>
+														<div className='h-4 w-28 rounded bg-border' />
+													</td>
+													<td className='px-4 py-3'>
+														<div className='h-4 w-8 rounded bg-border' />
+													</td>
+													<td className='px-4 py-3'>
+														<div className='h-5 w-16 rounded-full bg-border-light' />
+													</td>
+													<td className='px-4 py-3'>
+														<div className='h-4 w-14 rounded bg-border ml-auto' />
+													</td>
+													<td className='px-4 py-3'>
+														<div className='h-4 w-14 rounded bg-border ml-auto' />
+													</td>
+													<td className='px-4 py-3'>
+														<div className='h-4 w-16 rounded bg-border-light ml-auto' />
+													</td>
+												</tr>
+											)
+										)
 									: items.map((item) => (
 											<tr
 												key={item.id}
@@ -812,43 +995,68 @@ const List = () => {
 												<td className='px-4 py-3'>
 													<input
 														type='checkbox'
-														checked={!!item.isChecked}
-														onChange={() => handleCheckItem(item)}
+														checked={
+															!!item.isChecked
+														}
+														onChange={() =>
+															handleCheckItem(
+																item
+															)
+														}
 													/>
 												</td>
-												<td className={`px-4 py-3 font-medium text-text-primary ${item.isChecked ? 'line-through text-text-secondary' : ''}`}>
+												<td
+													className={`px-4 py-3 font-medium text-text-primary ${item.isChecked ? 'line-through text-text-secondary' : ''}`}>
 													{item.name}
 												</td>
-												<td className={`px-4 py-3 text-text-secondary ${item.isChecked ? 'line-through text-text-tertiary' : ''}`}>
+												<td
+													className={`px-4 py-3 text-text-secondary ${item.isChecked ? 'line-through text-text-tertiary' : ''}`}>
 													{item.quantity}
 												</td>
 												<td className='px-4 py-3 text-text-secondary'>
 													{item.weight ? (
-														<span className={`inline-flex items-center gap-1 text-sm bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full ${item.isChecked ? 'opacity-50' : ''}`}>
-															{item.weight.value} {t(`list.units.${item.weight.unit as WeightUnit}`)}
+														<span
+															className={`inline-flex items-center gap-1 text-sm bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full ${item.isChecked ? 'opacity-50' : ''}`}>
+															{item.weight.value}{' '}
+															{t(
+																`list.units.${item.weight.unit as WeightUnit}`
+															)}
 														</span>
 													) : (
-														<span className='text-text-tertiary'>&mdash;</span>
+														<span className='text-text-tertiary'>
+															&mdash;
+														</span>
 													)}
 												</td>
 												<td className='px-4 py-3 text-right text-text-secondary'>
 													{fmt(item.price)}
 												</td>
 												<td className='px-4 py-3 text-right font-medium text-text-primary'>
-													{fmt(item.quantity * item.price)}
+													{fmt(
+														item.quantity *
+															item.price
+													)}
 												</td>
 												<td className='px-4 py-3'>
 													<div className='flex items-center justify-end gap-2'>
 														<button
 															type='button'
 															className='cursor-pointer p-1 rounded text-text-tertiary hover:text-blue-500 hover:bg-blue-50 transition-colors'
-															onClick={() => setEditingItem(item)}>
+															onClick={() =>
+																setEditingItem(
+																	item
+																)
+															}>
 															<Edit size={16} />
 														</button>
 														<button
 															type='button'
 															className='cursor-pointer p-1 rounded text-text-tertiary hover:text-red-500 hover:bg-red-50 transition-colors'
-															onClick={() => handleDeleteItem(item)}>
+															onClick={() =>
+																handleDeleteItem(
+																	item
+																)
+															}>
 															<Trash size={16} />
 														</button>
 													</div>
@@ -859,8 +1067,12 @@ const List = () => {
 								{!loading && (
 									<tr
 										className='group hover:bg-bg-secondary transition-colors duration-150 cursor-pointer'
-										onClick={() => setShowAddItemModal(true)}>
-										<td colSpan={7} className='px-4 py-3'>
+										onClick={() =>
+											setShowAddItemModal(true)
+										}>
+										<td
+											colSpan={7}
+											className='px-4 py-3'>
 											<button
 												type='button'
 												className='flex items-center gap-2 text-sm text-text-tertiary group-hover:text-green-600 transition-colors'>
@@ -874,7 +1086,9 @@ const List = () => {
 							{!loading && (
 								<tfoot>
 									<tr className='border-t-2 border-border bg-bg-secondary'>
-										<td colSpan={5} className='px-4 py-3 text-right font-semibold text-text-primary'>
+										<td
+											colSpan={5}
+											className='px-4 py-3 text-right font-semibold text-text-primary'>
 											{t('list.totals.groceriesTotal')}
 										</td>
 										<td className='px-4 py-3 text-right font-bold text-text-primary'>
@@ -883,7 +1097,9 @@ const List = () => {
 										<td />
 									</tr>
 									<tr className='border-t border-border bg-bg-secondary'>
-										<td colSpan={5} className='px-4 py-3 text-right font-semibold text-text-primary'>
+										<td
+											colSpan={5}
+											className='px-4 py-3 text-right font-semibold text-text-primary'>
 											{t('list.totals.totalToPay')}
 										</td>
 										<td className='px-4 py-3 text-right font-bold text-green-600'>
@@ -898,7 +1114,9 @@ const List = () => {
 				</>
 			) : (
 				<div className='text-center py-16 flex flex-col sm:flex-row items-center justify-center gap-2'>
-					<p className='text-text-secondary'>No items in this list yet.</p>
+					<p className='text-text-secondary'>
+						No items in this list yet.
+					</p>
 					<button
 						type='button'
 						className='cursor-pointer flex items-center gap-2 text-green-500 hover:border-b border-green-500 transition-all duration-200'
@@ -917,7 +1135,9 @@ const List = () => {
 						className='bg-surface rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md p-6'
 						onClick={(e) => e.stopPropagation()}>
 						<div className='flex items-center justify-between mb-6'>
-							<h2 className='text-xl font-semibold text-text-primary'>{t('list.addItemModal.title')}</h2>
+							<h2 className='text-xl font-semibold text-text-primary'>
+								{t('list.addItemModal.title')}
+							</h2>
 							<button
 								type='button'
 								className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary hover:text-text-secondary transition-colors'
@@ -926,9 +1146,13 @@ const List = () => {
 							</button>
 						</div>
 
-						<form className='flex flex-col gap-4' onSubmit={handleAddItem}>
+						<form
+							className='flex flex-col gap-4'
+							onSubmit={handleAddItem}>
 							<div className='flex flex-col gap-1'>
-								<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.name')}</label>
+								<label className='text-sm font-medium text-text-primary'>
+									{t('list.addItemModal.name')}
+								</label>
 								<input
 									type='text'
 									autoFocus
@@ -940,24 +1164,32 @@ const List = () => {
 							</div>
 							<div className='grid grid-cols-2 gap-4'>
 								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.quantity')}</label>
+									<label className='text-sm font-medium text-text-primary'>
+										{t('list.addItemModal.quantity')}
+									</label>
 									<input
 										type='number'
 										min={1}
 										value={addQty}
-										onChange={(e) => setAddQty(e.target.value)}
+										onChange={(e) =>
+											setAddQty(e.target.value)
+										}
 										required
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary'
 									/>
 								</div>
 								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.price')}</label>
+									<label className='text-sm font-medium text-text-primary'>
+										{t('list.addItemModal.price')}
+									</label>
 									<input
 										type='number'
 										step='0.01'
 										min={0}
 										value={addPrice}
-										onChange={(e) => setAddPrice(e.target.value)}
+										onChange={(e) =>
+											setAddPrice(e.target.value)
+										}
 										required
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary'
 									/>
@@ -967,26 +1199,47 @@ const List = () => {
 								<div className='flex flex-col gap-1'>
 									<label className='text-sm font-medium text-text-primary'>
 										{t('list.addItemModal.weight')}{' '}
-										<span className='text-text-tertiary font-normal'>{t('list.addItemModal.weightOptional')}</span>
+										<span className='text-text-tertiary font-normal'>
+											{t(
+												'list.addItemModal.weightOptional'
+											)}
+										</span>
 									</label>
 									<input
 										type='number'
 										step='0.1'
 										min={0}
 										value={addWeightVal}
-										onChange={(e) => setAddWeightVal(e.target.value)}
+										onChange={(e) =>
+											setAddWeightVal(e.target.value)
+										}
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary placeholder:text-text-tertiary'
 									/>
 								</div>
 								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>{t('list.addItemModal.unit')}</label>
+									<label className='text-sm font-medium text-text-primary'>
+										{t('list.addItemModal.unit')}
+									</label>
 									<select
 										value={addWeightUnit}
-										onChange={(e) => setAddWeightUnit(e.target.value as WeightUnit)}
+										onChange={(e) =>
+											setAddWeightUnit(
+												e.target.value as WeightUnit
+											)
+										}
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-surface text-text-primary'>
-										<option value='kg'>{t('list.units.kg')}</option>
-										<option value='lbs'>{t('list.units.lbs')}</option>
-										<option value='oz'>{t('list.units.oz')}</option>
+										<option value='kg'>
+											{t('list.units.kg')}
+										</option>
+										<option value='lbs'>
+											{t('list.units.lbs')}
+										</option>
+										<option value='oz'>
+											{t('list.units.oz')}
+										</option>
+										<option value='l'>
+											{t('list.units.l')}
+										</option>
 									</select>
 								</div>
 							</div>
@@ -1001,7 +1254,12 @@ const List = () => {
 									type='submit'
 									disabled={addLoading}
 									className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white transition-colors'>
-									{addLoading ? <Loader2 size={14} className='animate-spin' /> : null}
+									{addLoading ? (
+										<Loader2
+											size={14}
+											className='animate-spin'
+										/>
+									) : null}
 									{t('list.addItemModal.add')}
 								</button>
 							</div>

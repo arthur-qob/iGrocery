@@ -7,7 +7,7 @@ const router = Router({ mergeParams: true })
 
 const weightSchema = z.object({
 	value: z.number().positive(),
-	unit: z.enum(['kg', 'lbs', 'oz']),
+	unit: z.enum(['kg', 'lbs', 'oz', 'l', 'ml'])
 })
 
 const createItemSchema = z.object({
@@ -15,7 +15,7 @@ const createItemSchema = z.object({
 	quantity: z.number().int().positive(),
 	price: z.number().nonnegative(),
 	weight: weightSchema.optional(),
-	isChecked: z.boolean().optional(),
+	isChecked: z.boolean().optional()
 })
 
 const updateItemSchema = createItemSchema.partial()
@@ -32,7 +32,10 @@ async function requireListMember(
 // GET /api/lists/:listId/items
 router.get<{ listId: string }>('/', async (req, res) => {
 	const list = await requireListMember(req.params.listId, req.user!.uid)
-	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
+	if (!list) {
+		res.status(403).json({ error: 'Forbidden' })
+		return
+	}
 	const items = await firestoreDB.getItems(list.id)
 	res.json(items)
 })
@@ -46,38 +49,58 @@ router.post<{ listId: string }>('/', async (req, res) => {
 	}
 	const uid = req.user!.uid
 	const list = await requireListMember(req.params.listId, uid)
-	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
+	if (!list) {
+		res.status(403).json({ error: 'Forbidden' })
+		return
+	}
 
 	const id = await firestoreDB.createItem(list.id, parsed.data)
 	void firestoreDB.touchList(list.id)
 
 	const others = list.members.filter((m) => m !== uid)
-	void notifyListMembers(others, list.name, `New item added: ${parsed.data.name}`, list.id)
+	void notifyListMembers(
+		others,
+		list.name,
+		`New item added: ${parsed.data.name}`,
+		list.id
+	)
 
 	res.status(201).json({ id })
 })
 
 // PATCH /api/lists/:listId/items/:itemId
-router.patch<{ listId: string; itemId: string }>('/:itemId', async (req, res) => {
-	const parsed = updateItemSchema.safeParse(req.body)
-	if (!parsed.success) {
-		res.status(400).json({ error: parsed.error.flatten() })
-		return
+router.patch<{ listId: string; itemId: string }>(
+	'/:itemId',
+	async (req, res) => {
+		const parsed = updateItemSchema.safeParse(req.body)
+		if (!parsed.success) {
+			res.status(400).json({ error: parsed.error.flatten() })
+			return
+		}
+		const list = await requireListMember(req.params.listId, req.user!.uid)
+		if (!list) {
+			res.status(403).json({ error: 'Forbidden' })
+			return
+		}
+		await firestoreDB.updateItem(list.id, req.params.itemId, parsed.data)
+		void firestoreDB.touchList(list.id)
+		res.json({ ok: true })
 	}
-	const list = await requireListMember(req.params.listId, req.user!.uid)
-	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
-	await firestoreDB.updateItem(list.id, req.params.itemId, parsed.data)
-	void firestoreDB.touchList(list.id)
-	res.json({ ok: true })
-})
+)
 
 // DELETE /api/lists/:listId/items/:itemId
-router.delete<{ listId: string; itemId: string }>('/:itemId', async (req, res) => {
-	const list = await requireListMember(req.params.listId, req.user!.uid)
-	if (!list) { res.status(403).json({ error: 'Forbidden' }); return }
-	await firestoreDB.deleteItem(list.id, req.params.itemId)
-	void firestoreDB.touchList(list.id)
-	res.json({ ok: true })
-})
+router.delete<{ listId: string; itemId: string }>(
+	'/:itemId',
+	async (req, res) => {
+		const list = await requireListMember(req.params.listId, req.user!.uid)
+		if (!list) {
+			res.status(403).json({ error: 'Forbidden' })
+			return
+		}
+		await firestoreDB.deleteItem(list.id, req.params.itemId)
+		void firestoreDB.touchList(list.id)
+		res.json({ ok: true })
+	}
+)
 
 export default router

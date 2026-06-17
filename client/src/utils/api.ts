@@ -5,8 +5,12 @@ const BASE_URL = (import.meta.env.VITE_BACKEND_API as string | undefined) ?? ''
 async function publicRequest<T>(path: string): Promise<T> {
 	const res = await fetch(`${BASE_URL}${path}`)
 	if (!res.ok) {
-		const err = (await res.json().catch(() => ({ error: res.statusText }))) as { error?: string }
-		throw Object.assign(new Error(err.error ?? 'Request failed'), { status: res.status })
+		const err = (await res
+			.json()
+			.catch(() => ({ error: res.statusText }))) as { error?: string }
+		throw Object.assign(new Error(err.error ?? 'Request failed'), {
+			status: res.status
+		})
 	}
 	return res.json() as Promise<T>
 }
@@ -33,7 +37,7 @@ export type GroceryItem = {
 	name: string
 	quantity: number
 	price: number
-	weight?: { value: number; unit: 'kg' | 'lbs' | 'oz' }
+	weight?: { value: number; unit: 'kg' | 'lbs' | 'oz' | 'l' | 'ml' }
 	isChecked?: boolean
 }
 
@@ -53,16 +57,18 @@ async function request<T>(
 		method,
 		headers: {
 			Authorization: `Bearer ${token}`,
-			'Content-Type': 'application/json',
+			'Content-Type': 'application/json'
 		},
-		body: body !== undefined ? JSON.stringify(body) : undefined,
+		body: body !== undefined ? JSON.stringify(body) : undefined
 	})
 	if (!res.ok) {
-		const err = (await res.json().catch(() => ({ error: res.statusText }))) as {
+		const err = (await res
+			.json()
+			.catch(() => ({ error: res.statusText }))) as {
 			error?: string
 		}
 		throw Object.assign(new Error(err.error ?? 'Request failed'), {
-			status: res.status,
+			status: res.status
 		})
 	}
 	return res.json() as Promise<T>
@@ -85,9 +91,14 @@ export const Api = {
 	leaveList: (id: string) =>
 		request<{ ok: true }>('DELETE', `/api/lists/${id}/leave`),
 	shareList: (id: string, targetUserId: string) =>
-		request<{ ok: true }>('POST', `/api/lists/${id}/share`, { targetUserId }),
+		request<{ ok: true }>('POST', `/api/lists/${id}/share`, {
+			targetUserId
+		}),
 	unshareList: (id: string, targetUserId: string) =>
-		request<{ ok: true }>('DELETE', `/api/lists/${id}/share/${targetUserId}`),
+		request<{ ok: true }>(
+			'DELETE',
+			`/api/lists/${id}/share/${targetUserId}`
+		),
 
 	// ── Items ──────────────────────────────────────────────────────────────
 	getItems: (listId: string) =>
@@ -124,11 +135,16 @@ export const Api = {
 	createInvite: (listId: string) =>
 		request<{ token: string }>('POST', `/api/lists/${listId}/invite`),
 	getInvitePreview: (token: string) =>
-		publicRequest<{ listId: string; listName: string }>(`/public/invites/${token}`),
+		publicRequest<{ listId: string; listName: string }>(
+			`/public/invites/${token}`
+		),
 	acceptInvite: (token: string) =>
 		request<{ listId: string }>('POST', `/api/invites/${token}/accept`),
 
 	// ── User profiles ──────────────────────────────────────────────────────
 	getUserProfiles: (uids: string[]) =>
-		request<UserProfile[]>('GET', `/api/users/profiles?uids=${uids.join(',')}`),
+		request<UserProfile[]>(
+			'GET',
+			`/api/users/profiles?uids=${uids.join(',')}`
+		)
 }
