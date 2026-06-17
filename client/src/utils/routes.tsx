@@ -8,12 +8,19 @@ import { useAuth } from '@/contexts/authContext'
 import SettingsPanel from '@/pages/settings/settingsPanel'
 import ProfilePanel from '@/pages/profile/profilePanel'
 import Navbar from '@/components/navbar'
+import ErrorBoundary from '@/components/errorBoundary'
+
+const FullScreenSpinner = () => (
+	<div className='min-h-screen flex items-center justify-center bg-bg-secondary'>
+		<div className='w-8 h-8 rounded-full border-4 border-border border-t-orange-500 animate-spin' />
+	</div>
+)
 
 /** Redirects to /auth/signin if the user is not authenticated, preserving the current path for post-login redirect. */
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 	const { userLoggedIn, loading } = useAuth()
 	const location = useLocation()
-	if (loading) return null
+	if (loading) return <FullScreenSpinner />
 	return userLoggedIn ? (
 		<>{children}</>
 	) : (
@@ -28,7 +35,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 /** Redirects logged-in users away from auth pages. */
 const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 	const { userLoggedIn, loading } = useAuth()
-	if (loading) return null
+	if (loading) return <FullScreenSpinner />
 	return userLoggedIn ? <Navigate to='/lists' replace /> : <>{children}</>
 }
 
@@ -44,6 +51,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => (
 
 const AppRoutes = () => {
 	return (
+		<ErrorBoundary>
 		<Routes>
 			<Route
 				index
@@ -118,6 +126,7 @@ const AppRoutes = () => {
 				element={<Navigate to='/lists' replace />}
 			/>
 		</Routes>
+		</ErrorBoundary>
 	)
 }
 
