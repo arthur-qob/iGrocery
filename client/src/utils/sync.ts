@@ -91,6 +91,17 @@ export async function deleteList(id: string): Promise<void> {
 	}
 }
 
+export async function copyList(id: string): Promise<GroceryList | null> {
+	try {
+		const { id: newId } = await Api.copyList(id)
+		const list = await Api.getList(newId)
+		await db.lists.put(list)
+		return list
+	} catch {
+		return null
+	}
+}
+
 export async function leaveList(id: string): Promise<void> {
 	await Api.leaveList(id)
 	await db.lists.delete(id)

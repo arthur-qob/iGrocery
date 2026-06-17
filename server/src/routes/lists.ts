@@ -138,6 +138,17 @@ router.delete('/:id/leave', async (req, res) => {
 	res.json({ ok: true })
 })
 
+// POST /api/lists/:id/copy – any member can duplicate a list (items copied, unchecked)
+router.post('/:id/copy', async (req, res) => {
+	const list = await firestoreDB.getList(req.params['id'] ?? '')
+	if (!list) { res.status(404).json({ error: 'List not found' }); return }
+	if (!list.members.includes(req.user!.uid)) {
+		res.status(403).json({ error: 'Forbidden' }); return
+	}
+	const newListId = await firestoreDB.copyList(list.id!, req.user!.uid)
+	res.status(201).json({ id: newListId })
+})
+
 // POST /api/lists/:id/invite – any member can generate an invite link
 router.post('/:id/invite', async (req, res) => {
 	const list = await firestoreDB.getList(req.params['id'] ?? '')

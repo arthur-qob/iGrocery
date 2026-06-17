@@ -64,7 +64,9 @@
       "CLOSED": "FECHADA"
     },
     "memberCount_one": "{{count}} membro",
-    "memberCount_other": "{{count}} membros"
+    "memberCount_other": "{{count}} membros",
+    "selectedCount_one": "{{count}} selecionada",
+    "selectedCount_other": "{{count}} selecionadas"
   },
   "createList": {
     "title": "Criar Nova Lista",
@@ -142,6 +144,9 @@
       "notFound": "Lista não encontrada.",
       "loadFailed": "Falha ao carregar a lista.",
       "deleted": "Esta lista foi excluída."
+    },
+    "copyList": {
+      "tooltip": "Duplicar lista"
     },
     "tooltip": {
       "deleteList": "Excluir lista",

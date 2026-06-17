@@ -100,6 +100,19 @@ class FirestoreDatabase {
 		})
 	}
 
+	async copyList(sourceListId: string, userId: string): Promise<string> {
+		const source = await this.getList(sourceListId)
+		if (!source) throw new Error('List not found')
+		const newListId = await this.createList(userId, `${source.name} (copy)`, source.currency ?? 'USD')
+		const items = await this.getItems(sourceListId)
+		await Promise.all(
+			items.map(({ id: _id, isChecked: _checked, ...itemData }) =>
+				this.createItem(newListId, { ...itemData, isChecked: false })
+			)
+		)
+		return newListId
+	}
+
 	async deleteList(listId: string): Promise<void> {
 		const items = await this.getItems(listId)
 		await Promise.all(

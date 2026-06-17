@@ -14,7 +14,7 @@ import {
 	X
 } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { getList, getItems, createItem, updateItem, deleteItem, updateList, deleteList, leaveList } from '@/utils/sync'
+import { getList, getItems, createItem, updateItem, deleteItem, updateList, deleteList, leaveList, copyList } from '@/utils/sync'
 import { Api } from '@/utils/api'
 import type { GroceryList, GroceryItem } from '@/utils/api'
 import { useCurrency, CURRENCY_OPTIONS } from '@/hooks/useCurrency'
@@ -333,6 +333,7 @@ const List = () => {
 	const [isSelectOpen, setIsSelectOpen] = useState<boolean>(false)
 	const [isCurrencyOpen, setIsCurrencyOpen] = useState(false)
 	const [leavingOrDeletingList, setLeavingOrDeletingList] = useState(false)
+	const [copyingList, setCopyingList] = useState(false)
 	const [confirmDialog, setConfirmDialog] = useState<ConfirmModalProps | null>(null)
 
 	const isOwner = list ? list.userId === currentUser?.uid : null
@@ -491,6 +492,14 @@ const List = () => {
 		await deleteItem(listId, item.id)
 	}
 
+	const handleCopyList = async () => {
+		if (!listId || copyingList) return
+		setCopyingList(true)
+		const newList = await copyList(listId)
+		setCopyingList(false)
+		if (newList) navigate(`/lists/${newList.id}`)
+	}
+
 	const handleDeleteList = () => {
 		setConfirmDialog({
 			title: t('list.deleteList.title'),
@@ -621,6 +630,20 @@ const List = () => {
 						className='cursor-pointer p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors'
 						onClick={() => setShowShareModal(true)}>
 						<Share size={18} />
+					</button>
+
+					{/* Duplicate */}
+					<button
+						type='button'
+						disabled={copyingList}
+						title={t('list.copyList.tooltip')}
+						className='cursor-pointer p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors disabled:opacity-50'
+						onClick={() => void handleCopyList()}>
+						{copyingList ? (
+							<Loader2 size={18} className='animate-spin' />
+						) : (
+							<Copy size={18} />
+						)}
 					</button>
 
 					{/* Leave (non-owner) or Delete (owner) */}

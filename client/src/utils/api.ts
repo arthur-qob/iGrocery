@@ -80,6 +80,8 @@ export const Api = {
 	) => request<{ ok: true }>('PATCH', `/api/lists/${id}`, data),
 	deleteList: (id: string) =>
 		request<{ ok: true }>('DELETE', `/api/lists/${id}`),
+	copyList: (id: string) =>
+		request<{ id: string }>('POST', `/api/lists/${id}/copy`),
 	leaveList: (id: string) =>
 		request<{ ok: true }>('DELETE', `/api/lists/${id}/leave`),
 	shareList: (id: string, targetUserId: string) =>

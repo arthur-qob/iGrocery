@@ -8,8 +8,10 @@ i18n
 	.use(initReactI18next)
 	.use(
 		resourcesToBackend(
-			(language: string, namespace: string) =>
-				import(`../../public/locales/${language}/${namespace}.json`)
+			async (language: string, namespace: string) => {
+				const res = await fetch(`/locales/${language}/${namespace}.json`)
+				return res.json() as Promise<Record<string, unknown>>
+			}
 		)
 	)
 	.init({

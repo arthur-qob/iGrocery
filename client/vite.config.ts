@@ -14,7 +14,7 @@ export default defineConfig({
 	server: {
 		proxy: {
 			'/api': 'http://localhost:3000',
-			'/public': 'http://localhost:3000',
+			'/public/invites': 'http://localhost:3000',
 		}
 	}
 })

@@ -64,7 +64,9 @@
       "CLOSED": "CLOSED"
     },
     "memberCount_one": "{{count}} member",
-    "memberCount_other": "{{count}} members"
+    "memberCount_other": "{{count}} members",
+    "selectedCount_one": "{{count}} selected",
+    "selectedCount_other": "{{count}} selected"
   },
   "createList": {
     "title": "Create New List",
@@ -142,6 +144,9 @@
       "notFound": "List not found.",
       "loadFailed": "Failed to load list.",
       "deleted": "This list has been deleted."
+    },
+    "copyList": {
+      "tooltip": "Duplicate list"
     },
     "tooltip": {
       "deleteList": "Delete list",
