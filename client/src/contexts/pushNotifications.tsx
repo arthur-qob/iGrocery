@@ -3,10 +3,11 @@ import {
 	useContext,
 	useEffect,
 	useState,
-	type ReactNode
+	type ReactNode,
 } from 'react'
-import { Bell, X } from 'lucide-react'
+import { Bell, RefreshCw, X } from 'lucide-react'
 import { getToken, onMessage } from 'firebase/messaging'
+import { Workbox } from 'workbox-window'
 import { messaging } from '@/utils/firebase/firebaseConfig'
 import { Api } from '@/utils/api'
 import { useAuth } from './authContext'
@@ -64,10 +65,32 @@ const NotificationPrompt = ({
 	</div>
 )
 
+// ── SW update toast ───────────────────────────────────────────────────────────
+
+const UpdateToast = ({ onUpdate }: { onUpdate: () => void }) => (
+	<div className='fixed bottom-4 left-4 z-50 w-72 bg-surface border border-border rounded-2xl shadow-xl p-3'>
+		<div className='flex items-center gap-3'>
+			<div className='rounded-full bg-orange-50 p-2 shrink-0'>
+				<RefreshCw size={16} className='text-orange-500' />
+			</div>
+			<div className='flex-1 min-w-0'>
+				<p className='font-semibold text-text-primary text-xs'>Update available</p>
+				<p className='text-xs text-text-secondary mt-0.5'>Reload to get the latest version.</p>
+			</div>
+			<button
+				type='button'
+				onClick={onUpdate}
+				className='shrink-0 px-2.5 py-1 rounded-lg text-xs font-medium bg-orange-500 hover:bg-orange-600 text-white transition-colors cursor-pointer'>
+				Reload
+			</button>
+		</div>
+	</div>
+)
+
 // ── Provider ──────────────────────────────────────────────────────────────────
 
 export const PushNotificationsProvider = ({
-	children
+	children,
 }: {
 	children: ReactNode
 }) => {
@@ -78,18 +101,27 @@ export const PushNotificationsProvider = ({
 		'Notification' in window ? Notification.permission : 'denied'
 	)
 	const [showPrompt, setShowPrompt] = useState(false)
+	const [showUpdateToast, setShowUpdateToast] = useState(false)
 
-	// Register service worker
+	// ── Register service worker via workbox-window ──────────────────────────
 	useEffect(() => {
 		if (!('serviceWorker' in navigator)) return
-		navigator.serviceWorker
-			.register('/sw.js')
-			.then((reg) => navigator.serviceWorker.ready.then(() => reg))
-			.then((reg) => setRegistration(reg))
-			.catch(console.error)
+
+		// In dev mode vite-plugin-pwa serves a dev SW; in prod it's /sw.js
+		const swUrl = import.meta.env.DEV ? '/dev-sw.js?dev-sw' : '/sw.js'
+		const wb = new Workbox(swUrl, { type: import.meta.env.DEV ? 'module' : 'classic' })
+
+		// Show the update toast when a new SW is waiting to activate
+		wb.addEventListener('waiting', () => {
+			setShowUpdateToast(true)
+		})
+
+		void wb.register().then((reg) => {
+			if (reg) setRegistration(reg)
+		})
 	}, [])
 
-	// Show in-app prompt after login when permission not yet decided
+	// ── Show in-app prompt after login when permission not yet decided ──────
 	useEffect(() => {
 		if (userLoggedIn && 'Notification' in window && permission === 'default') {
 			setShowPrompt(true)
@@ -98,7 +130,7 @@ export const PushNotificationsProvider = ({
 		}
 	}, [userLoggedIn, permission])
 
-	// Register FCM token once permission is granted and SW is ready
+	// ── Register FCM token once permission is granted and SW is ready ───────
 	useEffect(() => {
 		if (!registration || !userLoggedIn || permission !== 'granted') return
 
@@ -114,7 +146,7 @@ export const PushNotificationsProvider = ({
 			.catch(console.error)
 	}, [registration, userLoggedIn, permission])
 
-	// Show FCM notifications when the app is in the foreground
+	// ── Show FCM notifications when the app is in the foreground ───────────
 	useEffect(() => {
 		if (!userLoggedIn || !registration || permission !== 'granted') return
 		return onMessage(messaging, (payload) => {
@@ -123,13 +155,14 @@ export const PushNotificationsProvider = ({
 			const url = payload.data?.['redirectUrl'] ?? '/'
 			void registration.showNotification(title, {
 				body,
-				icon: '/vite.svg',
-				data: { url }
+				icon: '/icons/icon-192x192.png',
+				badge: '/icons/icon-96x96.png',
+				data: { url },
 			})
 		})
 	}, [userLoggedIn, registration, permission])
 
-	// Listen for messages from the service worker (Background Sync wake-up)
+	// ── Listen for Background Sync wake-up messages from the SW ────────────
 	useEffect(() => {
 		if (!('serviceWorker' in navigator)) return
 		const handler = (event: MessageEvent) => {
@@ -151,7 +184,7 @@ export const PushNotificationsProvider = ({
 	const notify = async ({
 		title,
 		message,
-		redirectUrl
+		redirectUrl,
 	}: {
 		title: string
 		message: string
@@ -168,9 +201,15 @@ export const PushNotificationsProvider = ({
 		const reg = registration ?? (await navigator.serviceWorker.ready)
 		reg.showNotification(title, {
 			body: message,
-			icon: '/vite.svg',
-			data: { url: redirectUrl }
+			icon: '/icons/icon-192x192.png',
+			badge: '/icons/icon-96x96.png',
+			data: { url: redirectUrl },
 		})
+	}
+
+	const handleUpdate = () => {
+		setShowUpdateToast(false)
+		window.location.reload()
 	}
 
 	return (
@@ -181,6 +220,9 @@ export const PushNotificationsProvider = ({
 					onAllow={() => void requestPermission()}
 					onDismiss={() => setShowPrompt(false)}
 				/>
+			)}
+			{showUpdateToast && (
+				<UpdateToast onUpdate={handleUpdate} />
 			)}
 		</PushNotificationsContext.Provider>
 	)
