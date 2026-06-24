@@ -38,6 +38,7 @@ const Navbar = () => {
 			<div className='flex items-center justify-between px-6 md:px-12 lg:px-20 h-16'>
 				<button
 					type='button'
+					data-tour='navbar-logo'
 					className='flex items-center gap-2 cursor-pointer'
 					onClick={() => navigate('/lists')}>
 					<div className='p-1.5 rounded-lg'>
@@ -54,11 +55,13 @@ const Navbar = () => {
 				{/* Desktop actions */}
 				<div className='hidden sm:flex items-center gap-1'>
 					<button
+						data-tour='navbar-settings'
 						className='p-2 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors cursor-pointer'
 						onClick={() => navigate('/settings')}>
 						<Cog size={24} />
 					</button>
 					<button
+						data-tour='navbar-profile'
 						className='p-1.5 rounded-lg text-text-secondary hover:text-text-primary hover:bg-bg-tertiary transition-colors cursor-pointer'
 						onClick={() => navigate('/profile')}>
 						{currentUser?.photoURL ? (

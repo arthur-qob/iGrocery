@@ -9,6 +9,8 @@ import SettingsPanel from '@/pages/settings/settingsPanel'
 import ProfilePanel from '@/pages/profile/profilePanel'
 import Navbar from '@/components/navbar'
 import ErrorBoundary from '@/components/errorBoundary'
+import TutorialTour from '@/components/tutorialTour'
+import { useTutorial } from '@/hooks/useTutorial'
 
 const FullScreenSpinner = () => (
 	<div className='min-h-screen flex items-center justify-center bg-bg-secondary'>
@@ -40,14 +42,20 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 }
 
 /** Layout wrapper with Navbar for all app pages. */
-const AppLayout = ({ children }: { children: React.ReactNode }) => (
-	<div className='min-h-screen bg-bg-secondary'>
-		<Navbar />
-		<main className='pt-16'>
-			{children}
-		</main>
-	</div>
-)
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+	const { currentUser } = useAuth()
+	const { showTutorial, dismissTutorial } = useTutorial(currentUser?.uid)
+
+	return (
+		<div className='min-h-screen bg-bg-secondary'>
+			<TutorialTour run={showTutorial} onFinish={dismissTutorial} />
+			<Navbar />
+			<main className='pt-16'>
+				{children}
+			</main>
+		</div>
+	)
+}
 
 const AppRoutes = () => {
 	return (

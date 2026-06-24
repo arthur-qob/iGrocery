@@ -182,6 +182,12 @@
 			"descriptionGranted": "You will be notified when list members make changes.",
 			"descriptionDenied": "Notifications are blocked. Enable them in your browser settings.",
 			"descriptionDefault": "Allow iGrocery to send you push notifications."
+		},
+		"help": {
+			"title": "Help",
+			"tutorial": "App Tutorial",
+			"tutorialDescription": "Replay the guided walkthrough of the main features.",
+			"startTutorial": "Start Tutorial"
 		}
 	},
 	"profile": {
@@ -311,6 +317,44 @@
 				"cookies": "Cookies"
 			},
 			"copyright": "\u00a9 2026 iGrocery. All rights reserved."
+		}
+	},
+	"tutorial": {
+		"welcome": {
+			"title": "Welcome to iGrocery! 🛒",
+			"body": "Let's take a quick tour so you can get started right away. You can skip this at any time."
+		},
+		"newList": {
+			"title": "Create a New List",
+			"body": "Tap here to create a new grocery list. Give it a name and start adding items right away."
+		},
+		"scanQr": {
+			"title": "Scan a QR Code",
+			"body": "Use this button to scan a QR code shared by a friend and join their list instantly."
+		},
+		"navbar": {
+			"title": "Back to Your Lists",
+			"body": "Click the iGrocery logo at any time to return to your lists overview."
+		},
+		"settings": {
+			"title": "Settings",
+			"body": "Customize the app's appearance, list sort order, and notification preferences here."
+		},
+		"profile": {
+			"title": "Your Profile",
+			"body": "Manage your display name, profile photo, password, and account from here."
+		},
+		"done": {
+			"title": "You're all set!",
+			"body": "That's it! Create your first list and start shopping smarter with iGrocery."
+		},
+		"controls": {
+			"back": "Back",
+			"close": "Close",
+			"last": "Done",
+			"next": "Next",
+			"skip": "Skip tour",
+			"open": "Open"
 		}
 	},
 	"version": "iGrocery v1.0.1"

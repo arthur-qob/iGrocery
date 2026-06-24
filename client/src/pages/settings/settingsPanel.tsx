@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Bell, Palette, List, ShoppingCart } from 'lucide-react'
+import { Bell, BookOpen, Palette, List, ShoppingCart } from 'lucide-react'
 import Toggle from '@/components/toggle'
 import SettingsSection from '@/components/settingsSection'
 import SettingsRow from '@/components/settingsRow'
@@ -8,6 +8,9 @@ import CustomSelect from '@/components/customSelect'
 import { Link } from 'react-router-dom'
 import { usePushNotifications } from '@/contexts/pushNotifications'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '@/contexts/authContext'
+import { useTutorial } from '@/hooks/useTutorial'
+import TutorialTour from '@/components/tutorialTour'
 
 type SortOrder = 'name' | 'date-created' | 'date-modified'
 
@@ -25,6 +28,8 @@ const savePref = (key: string, value: unknown) =>
 
 const SettingsPanel = () => {
 	const { t } = useTranslation()
+	const { currentUser } = useAuth()
+	const { showTutorial, dismissTutorial, restartTutorial } = useTutorial(currentUser?.uid)
 
 	// Sort options are built from translations so they update when locale changes
 	const SORT_OPTIONS: { value: SortOrder; label: string }[] = [
@@ -149,11 +154,29 @@ const SettingsPanel = () => {
 						</SettingsRow>
 					</SettingsSection>
 
+					{/* Help */}
+					<SettingsSection
+						icon={<BookOpen size={18} />}
+						title={t('settings.help.title')}>
+						<SettingsRow
+							label={t('settings.help.tutorial')}
+							description={t('settings.help.tutorialDescription')}>
+							<button
+								id='restart-tutorial-btn'
+								type='button'
+								onClick={restartTutorial}
+								className='px-3 py-1.5 rounded-lg text-xs font-medium bg-orange-500 hover:bg-orange-600 text-white transition-colors cursor-pointer'>
+								{t('settings.help.startTutorial')}
+							</button>
+						</SettingsRow>
+					</SettingsSection>
+
 					<p className='text-center text-xs text-text-secondary pb-4'>
 						{t('version')}
 					</p>
 				</div>
 			</main>
+			<TutorialTour run={showTutorial} onFinish={dismissTutorial} />
 		</div>
 	)
 }

@@ -182,6 +182,12 @@
 			"descriptionGranted": "Você será notificado quando membros da lista fizerem alterações.",
 			"descriptionDenied": "Notificações bloqueadas. Ative-as nas configurações do seu navegador.",
 			"descriptionDefault": "Permitir que o iGrocery envie notificações push."
+		},
+		"help": {
+			"title": "Ajuda",
+			"tutorial": "Tutorial do App",
+			"tutorialDescription": "Replique o guia passo a passo dos principais recursos.",
+			"startTutorial": "Iniciar Tutorial"
 		}
 	},
 	"profile": {
@@ -311,6 +317,44 @@
 				"cookies": "Cookies"
 			},
 			"copyright": "© 2026 iGrocery. Todos os direitos reservados."
+		}
+	},
+	"tutorial": {
+		"welcome": {
+			"title": "Bem-vindo ao iGrocery! 🛒",
+			"body": "Vamos fazer um tour rápido para você começar imediatamente. Você pode pular isso a qualquer momento."
+		},
+		"newList": {
+			"title": "Criar uma Nova Lista",
+			"body": "Toque aqui para criar uma nova lista de compras. Dê um nome a ela e comece a adicionar itens."
+		},
+		"scanQr": {
+			"title": "Escanear um QR Code",
+			"body": "Use este botão para escanear um QR code compartilhado por um amigo e entrar na lista dele instantaneamente."
+		},
+		"navbar": {
+			"title": "Voltar às Suas Listas",
+			"body": "Clique no logo do iGrocery a qualquer momento para voltar à visão geral das suas listas."
+		},
+		"settings": {
+			"title": "Configurações",
+			"body": "Personalize a aparência do app, a ordem de classificação das listas e as preferências de notificação aqui."
+		},
+		"profile": {
+			"title": "Seu Perfil",
+			"body": "Gerencie seu nome de exibição, foto de perfil, senha e conta a partir daqui."
+		},
+		"done": {
+			"title": "Tudo pronto!",
+			"body": "É isso! Crie sua primeira lista e comece a comprar de forma mais inteligente com o iGrocery."
+		},
+		"controls": {
+			"back": "Voltar",
+			"close": "Fechar",
+			"last": "Concluir",
+			"next": "Próximo",
+			"skip": "Pular tour",
+			"open": "Abrir"
 		}
 	},
 	"version": "iGrocery v1.0.1"

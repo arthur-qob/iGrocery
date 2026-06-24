@@ -246,6 +246,7 @@ const Lists = () => {
 				<div className='flex items-center gap-2'>
 					<button
 						type='button'
+						data-tour='scan-qr-btn'
 						title={t('lists.scanQR')}
 						className='flex items-center gap-2 border border-border text-text-secondary hover:text-text-primary hover:bg-bg-tertiary font-medium px-3 py-2.5 rounded-lg cursor-pointer transition-colors duration-200'
 						onClick={() => setShowQrScanner(true)}>
@@ -254,6 +255,7 @@ const Lists = () => {
 					</button>
 					<button
 						type='button'
+						data-tour='new-list-btn'
 						className='flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white font-medium px-5 py-2.5 rounded-lg cursor-pointer transition-colors duration-200'
 						onClick={() => setShowNewListModal(true)}>
 						<Plus size={18} />
