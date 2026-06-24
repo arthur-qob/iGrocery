@@ -1,4 +1,4 @@
-import Joyride, { type EventData, type Step, STATUS } from 'react-joyride'
+import { Joyride, type EventData, type Step, STATUS } from 'react-joyride'
 import { useTheme } from '@/contexts/theme'
 import { useTranslation } from 'react-i18next'
 
@@ -133,8 +133,6 @@ const TutorialTour = ({ run, onFinish }: TutorialTourProps) => {
 			run={run}
 			steps={steps}
 			continuous
-			showProgress
-			showSkipButton
 			scrollToFirstStep
 			onEvent={handleEvent}
 			locale={{
@@ -151,6 +149,9 @@ const TutorialTour = ({ run, onFinish }: TutorialTourProps) => {
 				textColor,
 				overlayColor: 'rgba(0,0,0,0.55)',
 				zIndex: 10000,
+				spotlightRadius: 10,
+				showProgress: true,
+				buttons: ['back', 'close', 'primary', 'skip'],
 			}}
 			styles={{
 				tooltip: {
@@ -191,9 +192,6 @@ const TutorialTour = ({ run, onFinish }: TutorialTourProps) => {
 				buttonClose: {
 					color: isDark ? '#9ca3af' : '#6b7280',
 					padding: 8,
-				},
-				spotlight: {
-					borderRadius: 10,
 				},
 			}}
 		/>
