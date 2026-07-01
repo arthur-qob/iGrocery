@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import {
 	Check,
 	ChevronDown,
@@ -53,6 +54,14 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 		item.weight?.unit ?? 'kg'
 	)
 	const [loading, setLoading] = useState(false)
+	const nameInputRef = useRef<HTMLInputElement>(null)
+
+	// Defer focus until after React's commit phase to avoid
+	// the Android WebView "insertBefore" DOM conflict
+	useEffect(() => {
+		const timer = setTimeout(() => nameInputRef.current?.focus(), 50)
+		return () => clearTimeout(timer)
+	}, [])
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
@@ -69,7 +78,7 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 		setLoading(false)
 	}
 
-	return (
+	return createPortal(
 		<div
 			className='fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm'
 			onClick={onClose}>
@@ -96,8 +105,8 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							{t('list.editItem.name')}
 						</label>
 						<input
+							ref={nameInputRef}
 							type='text'
-							autoFocus
 							value={name}
 							onChange={(e) => setName(e.target.value)}
 							required
@@ -192,7 +201,8 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 					</div>
 				</form>
 			</div>
-		</div>
+		</div>,
+		document.body
 	)
 }
 
@@ -241,7 +251,7 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 		setShowQr((v) => !v)
 	}
 
-	return (
+	return createPortal(
 		<div
 			className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
 			onClick={onClose}>
@@ -325,7 +335,8 @@ const ShareModal = ({ listId, onClose }: ShareModalProps) => {
 					</div>
 				)}
 			</div>
-		</div>
+		</div>,
+		document.body
 	)
 }
 
@@ -349,7 +360,7 @@ const ConfirmModal = ({
 	onClose
 }: ConfirmModalProps) => {
 	const { t } = useTranslation()
-	return (
+	return createPortal(
 		<div
 			className='fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm'
 			onClick={onClose}>
@@ -379,9 +390,11 @@ const ConfirmModal = ({
 					</button>
 				</div>
 			</div>
-		</div>
+		</div>,
+		document.body
 	)
 }
+
 
 // ── Main List Page ────────────────────────────────────────────────────────────
 
@@ -424,6 +437,15 @@ const List = () => {
 	const nameDebounce = useRef<ReturnType<typeof setTimeout> | null>(null)
 	const nameInputFocused = useRef(false)
 	const polling = useRef(false)
+	const addNameInputRef = useRef<HTMLInputElement>(null)
+
+	// Defer focus until after React's commit phase to avoid
+	// the Android WebView "insertBefore" DOM conflict
+	useEffect(() => {
+		if (!showAddItemModal) return
+		const timer = setTimeout(() => addNameInputRef.current?.focus(), 50)
+		return () => clearTimeout(timer)
+	}, [showAddItemModal])
 
 	// ── Load data ──────────────────────────────────────────────────────────────
 	useEffect(() => {
@@ -1127,7 +1149,7 @@ const List = () => {
 			)}
 
 			{/* ── Add Item Modal ─────────────────────────────────────────────── */}
-			{showAddItemModal && (
+			{showAddItemModal && createPortal(
 				<div
 					className='fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm'
 					onClick={() => setShowAddItemModal(false)}>
@@ -1154,8 +1176,8 @@ const List = () => {
 									{t('list.addItemModal.name')}
 								</label>
 								<input
+									ref={addNameInputRef}
 									type='text'
-									autoFocus
 									value={addName}
 									onChange={(e) => setAddName(e.target.value)}
 									required
@@ -1265,7 +1287,8 @@ const List = () => {
 							</div>
 						</form>
 					</div>
-				</div>
+				</div>,
+				document.body
 			)}
 
 			{/* ── Edit Item Modal ────────────────────────────────────────────── */}
