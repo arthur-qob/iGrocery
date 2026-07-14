@@ -431,6 +431,7 @@ const List = () => {
 	const [addWeightVal, setAddWeightVal] = useState('')
 	const [addWeightUnit, setAddWeightUnit] = useState<WeightUnit>('kg')
 	const [addLoading, setAddLoading] = useState(false)
+	const [addError, setAddError] = useState<string | null>(null)
 
 	// List name edit
 	const [listName, setListName] = useState('')
@@ -571,16 +572,34 @@ const List = () => {
 	const handleAddItem = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (!listId) return
+
+		const qty = parseInt(addQty, 10)
+		const price = parseFloat(addPrice)
+
+		if (!addName.trim()) {
+			setAddError('Name is required')
+			return
+		}
+		if (isNaN(qty) || qty <= 0) {
+			setAddError('Quantity must be a positive number')
+			return
+		}
+		if (isNaN(price) || price < 0) {
+			setAddError('Price must be a non-negative number')
+			return
+		}
+
+		setAddError(null)
 		setAddLoading(true)
 		const item: Omit<GroceryItem, 'id'> = {
 			name: addName.trim(),
-			quantity: parseInt(addQty, 10),
-			price: parseFloat(addPrice)
+			quantity: qty,
+			price
 		}
 		if (addWeightVal) {
-			item.weight = {
-				value: parseFloat(addWeightVal),
-				unit: addWeightUnit
+			const weightVal = parseFloat(addWeightVal)
+			if (!isNaN(weightVal) && weightVal > 0) {
+				item.weight = { value: weightVal, unit: addWeightUnit }
 			}
 		}
 		await createItem(listId, item)
@@ -592,6 +611,7 @@ const List = () => {
 		setAddQty('1')
 		setAddPrice('0')
 		setAddWeightVal('')
+		setAddError(null)
 		setAddLoading(false)
 	}
 
@@ -1265,7 +1285,10 @@ const List = () => {
 									</select>
 								</div>
 							</div>
-							<div className='flex justify-end gap-3 mt-2'>
+							{addError && (
+						<p className='text-sm text-red-500'>{addError}</p>
+					)}
+					<div className='flex justify-end gap-3 mt-2'>
 								<button
 									type='button'
 									className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'

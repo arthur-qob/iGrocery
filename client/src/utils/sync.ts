@@ -1,6 +1,7 @@
 import { Api } from './api'
 import type { GroceryList, GroceryItem } from './api'
 import { db } from './db'
+import { auth } from './firebase/firebaseConfig'
 
 // ── Read helpers (API first, IndexedDB fallback) ─────────────────────────────
 
@@ -184,11 +185,15 @@ export async function flushPendingOps(): Promise<void> {
 	const ops = await db.pendingOps.orderBy('createdAt').toArray()
 	for (const op of ops) {
 		try {
+			const token = await auth.currentUser?.getIdToken()
 			const res = await fetch(
 				(import.meta.env.VITE_BACKEND_API as string | undefined ?? '') + op.path,
 				{
 					method: op.method,
-					headers: { 'Content-Type': 'application/json' },
+					headers: {
+						'Content-Type': 'application/json',
+						...(token ? { Authorization: `Bearer ${token}` } : {})
+					},
 					body: op.body ? JSON.stringify(op.body) : undefined
 				}
 			)
