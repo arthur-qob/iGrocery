@@ -153,7 +153,35 @@
 		"tooltip": {
 			"deleteList": "Delete list",
 			"leaveList": "Leave list"
-		}
+		},
+		"category": {
+			"label": "Category",
+			"optional": "(optional)",
+			"placeholder": "e.g. Dairy, Meat\u2026",
+			"autoDetect": "Auto-detect",
+			"detecting": "Detecting\u2026",
+			"clearCategory": "Clear category",
+			"autoDetectError": "Auto-detect failed",
+			"aiKeyNotConfigured": "AI key not configured yet",
+			"labels": {
+				"dairy": "Dairy",
+				"meatPoultry": "Meat & Poultry",
+				"seafood": "Seafood",
+				"bakery": "Bakery",
+				"fruits": "Fruits",
+				"vegetables": "Vegetables",
+				"beverages": "Beverages",
+				"snacks": "Snacks",
+				"frozenFoods": "Frozen Foods",
+				"cleaning": "Cleaning",
+				"healthBeauty": "Health & Beauty",
+				"pantryStaples": "Pantry Staples",
+				"other": "Other"
+			}
+		},
+		"categorizeAll": "Auto Categorize All",
+		"categorizingAll": "Categorizing\u2026",
+		"groupByCategory": "Group by category"
 	},
 	"settings": {
 		"title": "Settings",
@@ -347,6 +375,10 @@
 		"done": {
 			"title": "You're all set!",
 			"body": "That's it! Create your first list and start shopping smarter with iGrocery."
+		},
+		"category": {
+			"title": "Smart Categorization ✨",
+			"body": "Use \"Auto Categorize All\" to let AI automatically group your items. Set categories manually per item in the Add/Edit modal, then toggle \"Group by category\" to sort them visually."
 		},
 		"controls": {
 			"back": "Back",

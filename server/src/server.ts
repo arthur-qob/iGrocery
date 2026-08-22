@@ -5,6 +5,7 @@ import cors from 'cors'
 import { authMiddleware } from './middleware/auth.js'
 import listsRouter from './routes/lists.js'
 import itemsRouter from './routes/items.js'
+import categorizeRouter from './routes/categorize.js'
 import usersRouter from './routes/users.js'
 import invitesRouter from './routes/invites.js'
 import publicRouter from './routes/public.js'
@@ -36,6 +37,8 @@ app.use('/public', publicRouter)
 
 app.use('/api', authMiddleware)
 app.use('/api/lists', listsRouter)
+// categorize must come before items so /categorize doesn't match /:itemId
+app.use('/api/lists/:listId/items', categorizeRouter)
 app.use('/api/lists/:listId/items', itemsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/invites', invitesRouter)

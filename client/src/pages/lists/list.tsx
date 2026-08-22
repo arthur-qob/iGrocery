@@ -11,6 +11,7 @@ import {
 	Plus,
 	QrCode,
 	Share,
+	Sparkles,
 	Trash,
 	X
 } from 'lucide-react'
@@ -31,6 +32,141 @@ import type { GroceryList, GroceryItem } from '@/utils/api'
 import { useCurrency, CURRENCY_OPTIONS } from '@/hooks/useCurrency'
 import { useAuth } from '@/contexts/authContext'
 import { useTranslation } from 'react-i18next'
+import {
+	CATEGORY_COLORS,
+	SUGGESTED_LABELS,
+	getCategoryColor,
+	getCategoryLabelKey
+} from '@/utils/categories'
+
+// ── Category picker ───────────────────────────────────────────────────────────
+
+type CategoryState = { label: string; color: string } | null
+
+type CategoryPickerProps = {
+	listId: string
+	itemId?: string // present in edit mode
+	itemName?: string // used for single-item AI detect
+	value: CategoryState
+	onChange: (cat: CategoryState) => void
+}
+
+const CategoryPicker = ({
+	listId,
+	itemId,
+	value,
+	onChange
+}: CategoryPickerProps) => {
+	const { t } = useTranslation()
+	const [detecting, setDetecting] = useState(false)
+	const [detectError, setDetectError] = useState<string | null>(null)
+
+	const handleAutoDetect = async () => {
+		if (!itemId) return
+		setDetecting(true)
+		setDetectError(null)
+		try {
+			const { category } = await Api.categorizeItem(listId, itemId)
+			onChange(category)
+		} catch (err: unknown) {
+			const msg =
+				err instanceof Error ? err.message : 'Auto-detect failed'
+			setDetectError(
+				msg.includes('GEMINI_API_KEY')
+					? t('list.category.aiKeyNotConfigured')
+					: t('list.category.autoDetectError')
+			)
+		} finally {
+			setDetecting(false)
+		}
+	}
+
+	return (
+		<div className='flex flex-col gap-2'>
+			<div className='flex items-center justify-between'>
+				<label className='text-sm font-medium text-text-primary'>
+					{t('list.category.label')}
+					<span className='ml-1 text-text-tertiary font-normal'>
+						{t('list.category.optional')}
+					</span>
+				</label>
+				{itemId && (
+					<button
+						type='button'
+						disabled={detecting}
+						onClick={handleAutoDetect}
+						className='cursor-pointer flex items-center gap-1 text-xs font-medium text-purple-500 hover:text-purple-400 disabled:opacity-50 transition-colors'>
+						{detecting ? (
+							<Loader2 size={12} className='animate-spin' />
+						) : (
+							<Sparkles size={12} />
+						)}
+						{detecting ? t('list.category.detecting') : t('list.category.autoDetect')}
+					</button>
+				)}
+			</div>
+
+			{/* Label input with suggested labels datalist */}
+			<div className='flex gap-2'>
+				<input
+					type='text'
+					list='category-suggestions'
+					placeholder={t('list.category.placeholder')}
+					value={value?.label ?? ''}
+					onChange={(e) =>
+						onChange(
+							e.target.value
+								? {
+										label: e.target.value,
+										color: value?.color ?? 'slate'
+								  }
+								: null
+						)
+					}
+					className='flex-1 py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary text-sm placeholder:text-text-tertiary'
+				/>
+				<datalist id='category-suggestions'>
+					{SUGGESTED_LABELS.map((l) => (
+						<option key={l} value={l} />
+					))}
+				</datalist>
+			</div>
+
+			{/* Color palette */}
+			<div className='flex items-center gap-2 flex-wrap'>
+				{CATEGORY_COLORS.map((c) => (
+					<button
+						key={c.key}
+						type='button'
+						title={c.label}
+						onClick={() =>
+							onChange({ label: value?.label ?? '', color: c.key })
+						}
+						className={`w-6 h-6 rounded-full cursor-pointer transition-all ${
+							value?.color === c.key
+								? `ring-2 ring-offset-2 ${c.ring} scale-125`
+								: 'hover:scale-110'
+						}`}
+						style={{ backgroundColor: c.hex }}
+					/>
+				))}
+				{value && (
+					<button
+						type='button'
+						title={t('list.category.clearCategory')}
+						onClick={() => onChange(null)}
+						className='w-6 h-6 rounded-full cursor-pointer border-2 border-dashed border-border hover:border-red-400 flex items-center justify-center text-text-tertiary hover:text-red-400 transition-colors'>
+						<X size={10} />
+					</button>
+				)}
+			</div>
+
+			{detectError && (
+				<p className='text-xs text-red-500'>{detectError}</p>
+			)}
+		</div>
+	)
+}
 
 // ── Edit Item Modal ──────────────────────────────────────────────────────────
 
@@ -38,11 +174,12 @@ type WeightUnit = 'kg' | 'lbs' | 'oz' | 'l' | 'ml'
 
 type EditItemModalProps = {
 	item: GroceryItem
+	listId: string
 	onClose: () => void
 	onSave: (data: Partial<Omit<GroceryItem, 'id'>>) => Promise<void>
 }
 
-const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
+const EditItemModal = ({ item, listId, onClose, onSave }: EditItemModalProps) => {
 	const { t } = useTranslation()
 	const [name, setName] = useState(item.name)
 	const [quantity, setQuantity] = useState(String(item.quantity))
@@ -52,6 +189,9 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 	)
 	const [weightUnit, setWeightUnit] = useState<WeightUnit>(
 		item.weight?.unit ?? 'kg'
+	)
+	const [category, setCategory] = useState<CategoryState>(
+		item.category ?? null
 	)
 	const [loading, setLoading] = useState(false)
 	const nameInputRef = useRef<HTMLInputElement>(null)
@@ -69,7 +209,8 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 		const data: Partial<Omit<GroceryItem, 'id'>> = {
 			name: name.trim(),
 			quantity: parseInt(quantity, 10),
-			price: parseFloat(price)
+			price: parseFloat(price),
+			category: category ?? undefined
 		}
 		if (weightValue) {
 			data.weight = { value: parseFloat(weightValue), unit: weightUnit }
@@ -179,6 +320,13 @@ const EditItemModal = ({ item, onClose, onSave }: EditItemModalProps) => {
 							</select>
 						</div>
 					</div>
+					<CategoryPicker
+						listId={listId}
+						itemId={item.id}
+						value={category}
+						onChange={setCategory}
+					/>
+
 					<div className='flex justify-end gap-3 mt-2'>
 						<button
 							type='button'
@@ -395,7 +543,6 @@ const ConfirmModal = ({
 	)
 }
 
-
 // ── Main List Page ────────────────────────────────────────────────────────────
 
 const List = () => {
@@ -430,8 +577,12 @@ const List = () => {
 	const [addPrice, setAddPrice] = useState('0')
 	const [addWeightVal, setAddWeightVal] = useState('')
 	const [addWeightUnit, setAddWeightUnit] = useState<WeightUnit>('kg')
+	const [addCategory, setAddCategory] = useState<CategoryState>(null)
 	const [addLoading, setAddLoading] = useState(false)
 	const [addError, setAddError] = useState<string | null>(null)
+	const [categorizingAll, setCategorizingAll] = useState(false)
+	const [categorizeError, setCategorizeError] = useState<string | null>(null)
+	const [groupByCategory, setGroupByCategory] = useState(false)
 
 	// List name edit
 	const [listName, setListName] = useState('')
@@ -517,6 +668,14 @@ const List = () => {
 		(sum, item) => sum + (item.isChecked ? item.quantity * item.price : 0),
 		0
 	)
+	const displayedItems = groupByCategory
+		? [...items].sort((a, b) => {
+				const catA = a.category?.label ?? '\uffff'
+				const catB = b.category?.label ?? '\uffff'
+				if (catA !== catB) return catA.localeCompare(catB)
+				return a.name.localeCompare(b.name)
+		  })
+		: items
 
 	// ── Handlers ──────────────────────────────────────────────────────────────
 
@@ -594,7 +753,8 @@ const List = () => {
 		const item: Omit<GroceryItem, 'id'> = {
 			name: addName.trim(),
 			quantity: qty,
-			price
+			price,
+			category: addCategory ?? undefined
 		}
 		if (addWeightVal) {
 			const weightVal = parseFloat(addWeightVal)
@@ -611,8 +771,35 @@ const List = () => {
 		setAddQty('1')
 		setAddPrice('0')
 		setAddWeightVal('')
+		setAddCategory(null)
 		setAddError(null)
 		setAddLoading(false)
+	}
+
+	const handleCategorizeAll = async () => {
+		if (!listId || categorizingAll) return
+		setCategorizingAll(true)
+		setCategorizeError(null)
+		try {
+			const { results } = await Api.categorizeAllItems(listId)
+			setItems((prev) =>
+				prev.map((item) => {
+					const match = results.find((r) => r.id === item.id)
+					return match
+						? { ...item, category: { label: match.label, color: match.color } }
+						: item
+				})
+			)
+		} catch (err: unknown) {
+			const msg = err instanceof Error ? err.message : 'Failed'
+			setCategorizeError(
+				msg.includes('GEMINI_API_KEY')
+					? 'AI key not configured yet — add GEMINI_API_KEY to server/.env'
+					: 'Auto-categorization failed. Please try again.'
+			)
+		} finally {
+			setCategorizingAll(false)
+		}
 	}
 
 	const handleEditItem = async (data: Partial<Omit<GroceryItem, 'id'>>) => {
@@ -842,6 +1029,37 @@ const List = () => {
 
 			{loading || items.length > 0 ? (
 				<>
+					{/* ── Auto categorize + group toggle ────────────────────── */}
+					{!loading && items.length > 0 && (
+						<div className='flex items-center gap-3 flex-wrap'>
+							<button
+								type='button'
+								disabled={categorizingAll}
+								onClick={() => void handleCategorizeAll()}
+								className='cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium text-purple-500 bg-purple-500/10 hover:bg-purple-500/20 disabled:opacity-50 transition-colors'>
+								{categorizingAll ? (
+									<Loader2 size={14} className='animate-spin' />
+								) : (
+									<Sparkles size={14} />
+								)}
+								{categorizingAll ? t('list.categorizingAll') : t('list.categorizeAll')}
+							</button>
+							<button
+								type='button'
+								onClick={() => setGroupByCategory((v) => !v)}
+								className={`cursor-pointer inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+									groupByCategory
+										? 'bg-green-500 text-white hover:bg-green-600'
+										: 'text-text-secondary bg-bg-secondary hover:bg-bg-tertiary'
+								}`}>
+								{t('list.groupByCategory')}
+							</button>
+							{categorizeError && (
+								<span className='text-xs text-red-500'>{categorizeError}</span>
+							)}
+						</div>
+					)}
+
 					{/* ── Mobile card list ──────────────────────────────────── */}
 					<div className='md:hidden flex flex-col rounded-xl border border-border overflow-hidden divide-y divide-border-light'>
 						{loading
@@ -857,10 +1075,15 @@ const List = () => {
 										</div>
 									</div>
 								))
-							: items.map((item) => (
+							: displayedItems.map((item) => (
 									<div
 										key={item.id}
-										className='bg-surface p-4 flex gap-3 hover:bg-bg-secondary transition-colors'>
+										className={`p-4 flex gap-3 transition-colors ${item.category ? '' : 'bg-surface hover:bg-bg-secondary'}`}
+										style={
+											item.category
+												? { backgroundColor: `${getCategoryColor(item.category.color).hex}22` }
+												: undefined
+										}>
 										<input
 											type='checkbox'
 											checked={!!item.isChecked}
@@ -871,10 +1094,28 @@ const List = () => {
 										/>
 										<div className='flex-1 min-w-0'>
 											<div className='flex items-start justify-between gap-2'>
-												<span
-													className={`font-medium text-text-primary ${item.isChecked ? 'line-through text-text-tertiary' : ''}`}>
-													{item.name}
-												</span>
+												<div className='flex flex-col gap-1 min-w-0'>
+													<span
+														className={`font-medium text-text-primary ${item.isChecked ? 'line-through text-text-tertiary' : ''}`}>
+														{item.name}
+													</span>
+													{item.category?.label && (() => {
+														const { label, color } = item.category!
+														const col = getCategoryColor(color)
+														const labelKey = getCategoryLabelKey(label)
+														return (
+															<span
+																className={`self-start inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${item.isChecked ? 'opacity-40' : ''}`}
+																style={{
+																	backgroundColor: col.hex + '28',
+																	color: col.hex,
+																	border: `1px solid ${col.hex}50`
+																}}>
+																{labelKey ? (t as (k: string) => string)(labelKey) : label}
+															</span>
+														)
+													})()}
+												</div>
 												<div className='flex items-center gap-0.5 shrink-0'>
 													<button
 														type='button'
@@ -939,7 +1180,7 @@ const List = () => {
 						{!loading && (
 							<button
 								type='button'
-								className='flex items-center gap-2 px-4 py-3 text-sm text-text-tertiary hover:text-green-600 hover:bg-bg-secondary transition-colors cursor-pointer w-full'
+								className='fixed bottom-10 right-5 flex items-center gap-2 px-4 py-3 text-sm text-white bg-green-500 active:bg-green-600 rounded-2xl transition-colors cursor-pointer'
 								onClick={() => setShowAddItemModal(true)}>
 								<Plus size={16} />
 								{t('list.addItem')}
@@ -1030,10 +1271,15 @@ const List = () => {
 												</tr>
 											)
 										)
-									: items.map((item) => (
+									: displayedItems.map((item) => (
 											<tr
 												key={item.id}
-												className='border-b border-border-light hover:bg-bg-secondary transition-colors duration-150'>
+												className={`border-b border-border-light transition-colors duration-150 ${item.category ? '' : 'hover:bg-bg-secondary'}`}
+												style={
+													item.category
+														? { backgroundColor: `${getCategoryColor(item.category.color).hex}22` }
+														: undefined
+												}>
 												<td className='px-4 py-3'>
 													<input
 														type='checkbox'
@@ -1048,8 +1294,28 @@ const List = () => {
 													/>
 												</td>
 												<td
-													className={`px-4 py-3 font-medium text-text-primary ${item.isChecked ? 'line-through text-text-secondary' : ''}`}>
-													{item.name}
+													className='px-4 py-3'>
+													<div className='flex flex-col gap-1'>
+														<span className={`font-medium text-text-primary ${item.isChecked ? 'line-through text-text-secondary' : ''}`}>
+															{item.name}
+														</span>
+														{item.category?.label && (() => {
+															const { label, color } = item.category!
+															const col = getCategoryColor(color)
+															const labelKey = getCategoryLabelKey(label)
+															return (
+																<span
+																	className={`self-start inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold ${item.isChecked ? 'opacity-40' : ''}`}
+																	style={{
+																		backgroundColor: col.hex + '28',
+																		color: col.hex,
+																		border: `1px solid ${col.hex}50`
+																	}}>
+																	{labelKey ? (t as (k: string) => string)(labelKey) : label}
+																</span>
+															)
+														})()}
+													</div>
 												</td>
 												<td
 													className={`px-4 py-3 text-text-secondary ${item.isChecked ? 'line-through text-text-tertiary' : ''}`}>
@@ -1117,7 +1383,7 @@ const List = () => {
 											className='px-4 py-3'>
 											<button
 												type='button'
-												className='flex items-center gap-2 text-sm text-text-tertiary group-hover:text-green-600 transition-colors'>
+												className='fixed bottom-10 right-20 flex items-center gap-2 px-4 py-3 text-sm text-white bg-green-500 hover:bg-green-600 active:bg-green-700 rounded-2xl transition-colors cursor-pointer'>
 												<Plus size={16} />
 												{t('list.addItem')}
 											</button>
@@ -1169,155 +1435,168 @@ const List = () => {
 			)}
 
 			{/* ── Add Item Modal ─────────────────────────────────────────────── */}
-			{showAddItemModal && createPortal(
-				<div
-					className='fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm'
-					onClick={() => setShowAddItemModal(false)}>
+			{showAddItemModal &&
+				createPortal(
 					<div
-						className='bg-surface rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md p-6'
-						onClick={(e) => e.stopPropagation()}>
-						<div className='flex items-center justify-between mb-6'>
-							<h2 className='text-xl font-semibold text-text-primary'>
-								{t('list.addItemModal.title')}
-							</h2>
-							<button
-								type='button'
-								className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary hover:text-text-secondary transition-colors'
-								onClick={() => setShowAddItemModal(false)}>
-								<X size={20} />
-							</button>
-						</div>
+						className='fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm'
+						onClick={() => setShowAddItemModal(false)}>
+						<div
+							className='bg-surface rounded-t-2xl sm:rounded-2xl shadow-xl w-full sm:max-w-md p-6'
+							onClick={(e) => e.stopPropagation()}>
+							<div className='flex items-center justify-between mb-6'>
+								<h2 className='text-xl font-semibold text-text-primary'>
+									{t('list.addItemModal.title')}
+								</h2>
+								<button
+									type='button'
+									className='cursor-pointer rounded-lg p-1 text-text-tertiary hover:bg-bg-tertiary hover:text-text-secondary transition-colors'
+									onClick={() => setShowAddItemModal(false)}>
+									<X size={20} />
+								</button>
+							</div>
 
-						<form
-							className='flex flex-col gap-4'
-							onSubmit={handleAddItem}>
-							<div className='flex flex-col gap-1'>
-								<label className='text-sm font-medium text-text-primary'>
-									{t('list.addItemModal.name')}
-								</label>
-								<input
-									ref={addNameInputRef}
-									type='text'
-									value={addName}
-									onChange={(e) => setAddName(e.target.value)}
-									required
-									className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary placeholder:text-text-tertiary'
-								/>
-							</div>
-							<div className='grid grid-cols-2 gap-4'>
+							<form
+								className='flex flex-col gap-4'
+								onSubmit={handleAddItem}>
 								<div className='flex flex-col gap-1'>
 									<label className='text-sm font-medium text-text-primary'>
-										{t('list.addItemModal.quantity')}
+										{t('list.addItemModal.name')}
 									</label>
 									<input
-										type='number'
-										min={1}
-										value={addQty}
+										ref={addNameInputRef}
+										type='text'
+										value={addName}
 										onChange={(e) =>
-											setAddQty(e.target.value)
+											setAddName(e.target.value)
 										}
 										required
-										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary'
-									/>
-								</div>
-								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>
-										{t('list.addItemModal.price')}
-									</label>
-									<input
-										type='number'
-										step='0.01'
-										min={0}
-										value={addPrice}
-										onChange={(e) =>
-											setAddPrice(e.target.value)
-										}
-										required
-										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary'
-									/>
-								</div>
-							</div>
-							<div className='grid grid-cols-2 gap-4'>
-								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>
-										{t('list.addItemModal.weight')}{' '}
-										<span className='text-text-tertiary font-normal'>
-											{t(
-												'list.addItemModal.weightOptional'
-											)}
-										</span>
-									</label>
-									<input
-										type='number'
-										step='0.1'
-										min={0}
-										value={addWeightVal}
-										onChange={(e) =>
-											setAddWeightVal(e.target.value)
-										}
 										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary placeholder:text-text-tertiary'
 									/>
 								</div>
-								<div className='flex flex-col gap-1'>
-									<label className='text-sm font-medium text-text-primary'>
-										{t('list.addItemModal.unit')}
-									</label>
-									<select
-										value={addWeightUnit}
-										onChange={(e) =>
-											setAddWeightUnit(
-												e.target.value as WeightUnit
-											)
-										}
-										className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-surface text-text-primary'>
-										<option value='kg'>
-											{t('list.units.kg')}
-										</option>
-										<option value='lbs'>
-											{t('list.units.lbs')}
-										</option>
-										<option value='oz'>
-											{t('list.units.oz')}
-										</option>
-										<option value='l'>
-											{t('list.units.l')}
-										</option>
-									</select>
-								</div>
-							</div>
-							{addError && (
-						<p className='text-sm text-red-500'>{addError}</p>
-					)}
-					<div className='flex justify-end gap-3 mt-2'>
-								<button
-									type='button'
-									className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
-									onClick={() => setShowAddItemModal(false)}>
-									{t('list.addItemModal.cancel')}
-								</button>
-								<button
-									type='submit'
-									disabled={addLoading}
-									className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white transition-colors'>
-									{addLoading ? (
-										<Loader2
-											size={14}
-											className='animate-spin'
+								<div className='grid grid-cols-2 gap-4'>
+									<div className='flex flex-col gap-1'>
+										<label className='text-sm font-medium text-text-primary'>
+											{t('list.addItemModal.quantity')}
+										</label>
+										<input
+											type='number'
+											min={1}
+											value={addQty}
+											onChange={(e) =>
+												setAddQty(e.target.value)
+											}
+											required
+											className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary'
 										/>
-									) : null}
-									{t('list.addItemModal.add')}
-								</button>
-							</div>
-						</form>
-					</div>
-				</div>,
-				document.body
-			)}
+									</div>
+									<div className='flex flex-col gap-1'>
+										<label className='text-sm font-medium text-text-primary'>
+											{t('list.addItemModal.price')}
+										</label>
+										<input
+											type='number'
+											step='0.01'
+											min={0}
+											value={addPrice}
+											onChange={(e) =>
+												setAddPrice(e.target.value)
+											}
+											required
+											className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary'
+										/>
+									</div>
+								</div>
+								<div className='grid grid-cols-2 gap-4'>
+									<div className='flex flex-col gap-1'>
+										<label className='text-sm font-medium text-text-primary'>
+											{t('list.addItemModal.weight')}{' '}
+											<span className='text-text-tertiary font-normal'>
+												{t(
+													'list.addItemModal.weightOptional'
+												)}
+											</span>
+										</label>
+										<input
+											type='number'
+											step='0.1'
+											min={0}
+											value={addWeightVal}
+											onChange={(e) =>
+												setAddWeightVal(e.target.value)
+											}
+											className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-transparent text-text-primary placeholder:text-text-tertiary'
+										/>
+									</div>
+									<div className='flex flex-col gap-1'>
+										<label className='text-sm font-medium text-text-primary'>
+											{t('list.addItemModal.unit')}
+										</label>
+										<select
+											value={addWeightUnit}
+											onChange={(e) =>
+												setAddWeightUnit(
+													e.target.value as WeightUnit
+												)
+											}
+											className='w-full py-2 border-b-2 border-border outline-none focus:border-green-500 transition-colors duration-200 bg-surface text-text-primary'>
+											<option value='kg'>
+												{t('list.units.kg')}
+											</option>
+											<option value='lbs'>
+												{t('list.units.lbs')}
+											</option>
+											<option value='oz'>
+												{t('list.units.oz')}
+											</option>
+											<option value='l'>
+												{t('list.units.l')}
+											</option>
+										</select>
+									</div>
+								</div>
+								<CategoryPicker
+									listId={listId ?? ''}
+									value={addCategory}
+									onChange={setAddCategory}
+								/>
+								{addError && (
+									<p className='text-sm text-red-500'>
+										{addError}
+									</p>
+								)}
+								<div className='flex justify-end gap-3 mt-2'>
+									<button
+										type='button'
+										className='cursor-pointer px-4 py-2 rounded-lg text-sm font-medium text-text-secondary hover:bg-bg-tertiary transition-colors'
+										onClick={() =>
+											setShowAddItemModal(false)
+										}>
+										{t('list.addItemModal.cancel')}
+									</button>
+									<button
+										type='submit'
+										disabled={addLoading}
+										className='cursor-pointer flex items-center gap-2 px-5 py-2 rounded-lg text-sm font-medium bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white transition-colors'>
+										{addLoading ? (
+											<Loader2
+												size={14}
+												className='animate-spin'
+											/>
+										) : null}
+										{t('list.addItemModal.add')}
+									</button>
+								</div>
+							</form>
+						</div>
+					</div>,
+					document.body
+				)}
 
-			{/* ── Edit Item Modal ────────────────────────────────────────────── */}
+			{/* ── Edit Item Modal ──────────────────────────────────────────────── */}
 			{editingItem && (
 				<EditItemModal
 					item={editingItem}
+					listId={listId ?? ''}
 					onClose={() => setEditingItem(null)}
 					onSave={handleEditItem}
 				/>

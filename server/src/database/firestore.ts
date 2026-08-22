@@ -12,6 +12,7 @@ export type GroceryItem = {
 	price: number
 	weight?: { value: number; unit: WeightUnit }
 	isChecked?: boolean
+	category?: { label: string; color: string }
 }
 
 export type GroceryList = {

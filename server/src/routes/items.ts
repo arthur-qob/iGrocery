@@ -10,12 +10,18 @@ const weightSchema = z.object({
 	unit: z.enum(['kg', 'lbs', 'oz', 'l', 'ml'])
 })
 
+const categorySchema = z.object({
+	label: z.string().min(1).max(100),
+	color: z.string().min(1).max(50)
+})
+
 const createItemSchema = z.object({
 	name: z.string().min(1).max(200),
 	quantity: z.number().int().positive(),
 	price: z.number().nonnegative(),
 	weight: weightSchema.optional(),
-	isChecked: z.boolean().optional()
+	isChecked: z.boolean().optional(),
+	category: categorySchema.optional()
 })
 
 const updateItemSchema = createItemSchema.partial()

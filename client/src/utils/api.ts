@@ -39,6 +39,7 @@ export type GroceryItem = {
 	price: number
 	weight?: { value: number; unit: 'kg' | 'lbs' | 'oz' | 'l' | 'ml' }
 	isChecked?: boolean
+	category?: { label: string; color: string }
 }
 
 async function getIdToken(): Promise<string> {
@@ -117,6 +118,18 @@ export const Api = {
 		),
 	deleteItem: (listId: string, itemId: string) =>
 		request<{ ok: true }>('DELETE', `/api/lists/${listId}/items/${itemId}`),
+	categorizeItem: (listId: string, itemId: string) =>
+		request<{ category: { label: string; color: string } }>(
+			'POST',
+			`/api/lists/${listId}/items/${itemId}/categorize`
+		),
+	categorizeAllItems: (
+		listId: string
+	) =>
+		request<{ results: Array<{ id: string; label: string; color: string }> }>(
+			'POST',
+			`/api/lists/${listId}/items/categorize`
+		),
 
 	// ── Users ──────────────────────────────────────────────────────────────
 	getMe: () =>

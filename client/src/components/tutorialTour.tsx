@@ -103,6 +103,21 @@ const TutorialTour = ({ run, onFinish }: TutorialTourProps) => {
 			placement: 'center',
 			content: (
 				<div style={{ textAlign: 'center', padding: '8px 4px' }}>
+					<div style={{ fontSize: 40, marginBottom: 12 }}>✨</div>
+					<h2 style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700 }}>
+						{t('tutorial.category.title')}
+					</h2>
+					<p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, opacity: 0.8 }}>
+						{t('tutorial.category.body')}
+					</p>
+				</div>
+			),
+		},
+		{
+			target: 'body',
+			placement: 'center',
+			content: (
+				<div style={{ textAlign: 'center', padding: '8px 4px' }}>
 					<div style={{ fontSize: 40, marginBottom: 12 }}>🎉</div>
 					<h2 style={{ margin: '0 0 8px', fontSize: 20, fontWeight: 700 }}>
 						{t('tutorial.done.title')}

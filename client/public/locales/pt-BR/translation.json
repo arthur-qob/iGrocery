@@ -153,7 +153,35 @@
 		"tooltip": {
 			"deleteList": "Excluir lista",
 			"leaveList": "Sair da lista"
-		}
+		},
+		"category": {
+			"label": "Categoria",
+			"optional": "(opcional)",
+			"placeholder": "Ex.: Latic\u00ednios, Carnes\u2026",
+			"autoDetect": "Auto-detectar",
+			"detecting": "Detectando\u2026",
+			"clearCategory": "Remover categoria",
+			"autoDetectError": "Auto-detec\u00e7\u00e3o falhou",
+			"aiKeyNotConfigured": "Chave da IA n\u00e3o configurada",
+			"labels": {
+				"dairy": "Latic\u00ednios",
+				"meatPoultry": "Carnes e Aves",
+				"seafood": "Frutos do Mar",
+				"bakery": "Padaria",
+				"fruits": "Frutas",
+				"vegetables": "Legumes e Verduras",
+				"beverages": "Bebidas",
+				"snacks": "Lanches",
+				"frozenFoods": "Congelados",
+				"cleaning": "Limpeza",
+				"healthBeauty": "Sa\u00fade e Beleza",
+				"pantryStaples": "Despensa",
+				"other": "Outros"
+			}
+		},
+		"categorizeAll": "Auto-categorizar Tudo",
+		"categorizingAll": "Categorizando\u2026",
+		"groupByCategory": "Agrupar por categoria"
 	},
 	"settings": {
 		"title": "Configurações",
@@ -346,7 +374,11 @@
 		},
 		"done": {
 			"title": "Tudo pronto!",
-			"body": "É isso! Crie sua primeira lista e comece a comprar de forma mais inteligente com o iGrocery."
+			"body": "\u00c9 isso! Crie sua primeira lista e comece a comprar de forma mais inteligente com o iGrocery."
+		},
+		"category": {
+			"title": "Categoriza\u00e7\u00e3o Inteligente \u2728",
+			"body": "Use \"Auto-categorizar Tudo\" para deixar a IA agrupar seus itens automaticamente. Defina categorias manualmente por item no modal de Adicionar/Editar e ative \"Agrupar por categoria\" para organiz\u00e1-los visualmente."
 		},
 		"controls": {
 			"back": "Voltar",
