@@ -87,7 +87,7 @@ function sanitizeCategory(raw: unknown): Category {
 export async function classifyItem(name: string): Promise<Category> {
 	const genAI = getClient()
 	const model = genAI.getGenerativeModel({
-		model: 'gemini-3.6-flash',
+		model: 'gemini-2.0-flash',
 		systemInstruction: SYSTEM_PROMPT
 	})
 	const result = await model.generateContent(
@@ -107,7 +107,7 @@ export async function classifyItems(
 
 	const genAI = getClient()
 	const model = genAI.getGenerativeModel({
-		model: 'gemini-3.6-flash',
+		model: 'gemini-2.0-flash',
 		systemInstruction: SYSTEM_PROMPT
 	})
 
