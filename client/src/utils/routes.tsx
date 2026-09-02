@@ -64,7 +64,11 @@ const AppRoutes = () => {
 			<Route
 				index
 				path='/'
-				element={<LandingPage />}
+				element={
+					<GuestRoute>
+						<LandingPage />
+					</GuestRoute>
+				}
 			/>
 			<Route
 				path='/auth/signin'
