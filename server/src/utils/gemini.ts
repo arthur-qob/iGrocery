@@ -1,5 +1,52 @@
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
+// ---------------------------------------------------------------------------
+// Retry helpers
+// ---------------------------------------------------------------------------
+
+const TRANSIENT_STATUS_CODES = new Set([429, 500, 503])
+
+function isTransientError(err: unknown): boolean {
+	if (err && typeof err === 'object' && 'status' in err) {
+		return TRANSIENT_STATUS_CODES.has((err as { status: number }).status)
+	}
+	return false
+}
+
+function sleep(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * Retries `fn` up to `maxAttempts` times on transient errors (429 / 500 / 503).
+ * Wait time doubles after each failure and a random jitter (0–500 ms) is added
+ * to avoid thundering-herd retries from multiple clients.
+ */
+async function withRetry<T>(
+	fn: () => Promise<T>,
+	maxAttempts: number = 4,
+	baseDelayMs: number = 1000
+): Promise<T> {
+	for (let attempt = 0; attempt < maxAttempts; attempt++) {
+		try {
+			return await fn()
+		} catch (err) {
+			const isLast = attempt === maxAttempts - 1
+			if (isLast || !isTransientError(err)) throw err
+
+			const delay = baseDelayMs * 2 ** attempt + Math.random() * 500
+			console.warn(
+				`[gemini] Transient error on attempt ${attempt + 1}/${maxAttempts}. ` +
+					`Retrying in ${Math.round(delay)}ms…`,
+				err
+			)
+			await sleep(delay)
+		}
+	}
+	// Unreachable, but satisfies TypeScript
+	throw new Error('withRetry: exhausted all attempts')
+}
+
 const VALID_COLORS = [
 	'blue',
 	'green',
@@ -87,11 +134,13 @@ function sanitizeCategory(raw: unknown): Category {
 export async function classifyItem(name: string): Promise<Category> {
 	const genAI = getClient()
 	const model = genAI.getGenerativeModel({
-		model: 'gemini-2.0-flash',
+		model: 'gemini-3.6-flash',
 		systemInstruction: SYSTEM_PROMPT
 	})
-	const result = await model.generateContent(
-		`Classify this grocery item. Respond with ONLY JSON {"label":"...","color":"..."}\n\nItem: "${name}"`
+	const result = await withRetry(() =>
+		model.generateContent(
+			`Classify this grocery item. Respond with ONLY JSON {"label":"...","color":"..."}\n\nItem: "${name}"`
+		)
 	)
 	const text = result.response.text().trim()
 	// Strip any accidental markdown code fences
@@ -107,7 +156,7 @@ export async function classifyItems(
 
 	const genAI = getClient()
 	const model = genAI.getGenerativeModel({
-		model: 'gemini-2.0-flash',
+		model: 'gemini-3.6-flash',
 		systemInstruction: SYSTEM_PROMPT
 	})
 
@@ -115,8 +164,10 @@ export async function classifyItems(
 		.map((item) => `- id: "${item.id}", name: "${item.name}"`)
 		.join('\n')
 
-	const result = await model.generateContent(
-		`Classify each grocery item below. Respond with ONLY a JSON array: [{"id":"...","label":"...","color":"..."}, ...]\n\nItems:\n${list}`
+	const result = await withRetry(() =>
+		model.generateContent(
+			`Classify each grocery item below. Respond with ONLY a JSON array: [{"id":"...","label":"...","color":"..."}, ...]\n\nItems:\n${list}`
+		)
 	)
 
 	const text = result.response.text().trim()
